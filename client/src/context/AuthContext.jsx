@@ -8,9 +8,14 @@ export const AuthContext = createContext();
 export function AuthProvider({children}) {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem('authToken') || '');
+  const [loginSessionToken, setLoginSessionToken] = useState(() => localStorage.getItem('loginSessionToken') || '');
 
+  const [loginStep, setLoginStep] = useState(1);
+  const [loginData, setLoginData] = useState({
+    userName: "",
+    password: "",
+  });
   const [signUpStep, setSignUpStep] = useState(1);
   const [signUpData, setSignUpData] = useState({
       // STEP #1 
@@ -96,6 +101,67 @@ export function AuthProvider({children}) {
     }
   };
 
+
+  // STEP #1: LOGIN PROCESS
+  const handleLoginStepOne = async (userName, password) => {
+    try {
+      const formData = {
+        userName, 
+        password
+      };
+
+      const response = await axios.post(backendUrl + "/api/user/login", formData);
+      if (response.data.success) {
+        setLoginSessionToken(response.data.loginSessionToken);
+        if (loginSessionToken) {
+          localStorage.setItem("loginSessionToken", loginSessionToken);
+        }
+
+        toast.success(response.data.message, {...toastSuccess});
+        navigate('/login/verification')
+
+        setLoginStep(2);
+      } else {
+        toast.error(response.data.message, {...toastError});
+      }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message, {...toastError});
+    }
+  };
+
+
+  // STEP #2: LOGIN PROCESS
+  const handleLoginStepTwo = async (loginSessionToken, verificationCode) => {
+    try {
+      const formData = {
+        loginSessionToken, 
+        verificationCode
+      };
+
+      const response = await axios.post(backendUrl + "/api/user/login/verification", formData);
+      if (response.data.success) {
+        setLoginData({ userName: "", password: "" });
+        setLoginSessionToken('');
+        localStorage.removeItem('loginSessionToken');
+
+        setToken(response.data.token);
+        localStorage.setItem("authToken", response.data.token);
+        
+        toast.success(response.data.message, {...toastSuccess});
+        navigate('/home')
+
+      } else {
+        toast.error(response.data.message, {...toastError});
+      }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message, {...toastError});
+    }
+  };
+
+
+
   // USER TOKEN
   useEffect(() => {
       if (token) {
@@ -103,7 +169,13 @@ export function AuthProvider({children}) {
       } else {
         localStorage.removeItem('authToken');
       }
-  }, [token]);
+
+      if (loginSessionToken) {
+        localStorage.setItem('loginSessionToken', loginSessionToken);
+      } else {
+        localStorage.removeItem('loginSessionToken');
+      }
+  }, [token, loginSessionToken]);
 
 
   /*-----------------------TOAST---------------------*/
@@ -115,7 +187,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo
   }
 
   return (

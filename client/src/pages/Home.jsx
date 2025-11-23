@@ -3,12 +3,14 @@ import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const Home = () => {
-  const { setToken, navigate, toastSuccess } = useContext(AuthContext);
+  const { setLoginStep, setSignUpStep, setToken, navigate, toastSuccess } = useContext(AuthContext);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setToken('');
     navigate('/login');
+    setLoginStep(1);
+    setSignUpStep(1)
     toast.success("Logged out successfully", {...toastSuccess});
   }
   return (
