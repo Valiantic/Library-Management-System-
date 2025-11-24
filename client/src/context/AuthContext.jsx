@@ -10,6 +10,9 @@ export function AuthProvider({children}) {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [token, setToken] = useState(() => localStorage.getItem('authToken') || '');
   const [loginSessionToken, setLoginSessionToken] = useState(() => localStorage.getItem('loginSessionToken') || '');
+  const [passwordResetSessionToken, setPasswordResetSessionToken] = useState(() => localStorage.getItem('passwordResetSessionToken') || '');
+
+  const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
 
   const [loginStep, setLoginStep] = useState(1);
   const [loginData, setLoginData] = useState({
@@ -161,6 +164,74 @@ export function AuthProvider({children}) {
   };
 
 
+  // STEP #1: FORGOT PASSWORD
+  const handleForgotPasswordStepOne = async (emailAddress) => {
+    try {
+
+      const response = await axios.post(backendUrl + "/api/user/forgot-password", {emailAddress});
+      if (response.data.success) {
+        toast.success(response.data.message, {...toastSuccess});
+
+        setForgotPasswordStep(2);
+        navigate("/forgot-password/verification");
+
+      } else {
+        toast.error(response.data.message, {...toastError});
+      }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message, {...toastError});
+    }
+  };
+
+  // STEP #2: FORGOT PASSWORD
+  const handleForgotPasswordStepTwo = async (verificationCode) => {
+    try {
+
+      const response = await axios.post(backendUrl + "/api/user/forgot-password/verification", {verificationCode});
+      if (response.data.success) {
+        toast.success(response.data.message, {...toastSuccess});
+
+        setPasswordResetSessionToken(response.data.passwordResetSessionToken);
+        if (passwordResetSessionToken) {
+          localStorage.setItem("passwordResetSessionToken", passwordResetSessionToken);
+        }
+
+        setForgotPasswordStep(3);
+        navigate("/forgot-password/reset-password");
+
+      } else {
+        toast.error(response.data.message, {...toastError});
+      }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message, {...toastError});
+    }
+  };
+
+  // STEP #3: FORGOT PASSWORD
+  const handleForgotPasswordStepThree = async (newPassword, passwordResetSessionToken) => {
+    try {
+      const response = await axios.post(backendUrl + "/api/user/forgot-password/reset", {newPassword, passwordResetSessionToken});
+      if (response.data.success) {
+        toast.success(response.data.message, {...toastSuccess});
+
+        setPasswordResetSessionToken('');
+        localStorage.removeItem('passwordResetSessionToken');
+
+        setForgotPasswordStep(1);
+        navigate("/login");
+
+      } else {
+        toast.error(response.data.message, {...toastError});
+      }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message, {...toastError});
+    }
+  };
+
+
 
   // USER TOKEN
   useEffect(() => {
@@ -175,7 +246,13 @@ export function AuthProvider({children}) {
       } else {
         localStorage.removeItem('loginSessionToken');
       }
-  }, [token, loginSessionToken]);
+
+      if (passwordResetSessionToken) {
+        localStorage.setItem('passwordResetSessionToken', passwordResetSessionToken);
+      } else {
+        localStorage.removeItem('passwordResetSessionToken');
+      }
+  }, [token, loginSessionToken, passwordResetSessionToken]);
 
 
   /*-----------------------TOAST---------------------*/
@@ -187,7 +264,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken
   }
 
   return (

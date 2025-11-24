@@ -5,9 +5,13 @@ import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import Loading from "../Loading.jsx";
 import { assets } from "../../assets/assets";
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
 
 export default function SignUpForm() {
     const {handleSignUpStepOne, navigate, toastError} = useContext(AuthContext)
+    const [passwordType, setPasswordType] = useState('password');
+    const [loading, setLoading] = useState(false)
     
     const [formData, setFormData] = useState({
         firstName: "",
@@ -16,8 +20,6 @@ export default function SignUpForm() {
         userName: "",
         password: "",
     });
-
-    const [loading, setLoading] = useState(false)
 
     // Handle input changes
     const handleInputChange = (e) => {
@@ -70,6 +72,12 @@ export default function SignUpForm() {
     const handleSignIn = () => {
         navigate('/')
     }
+
+    const togglePassword = () => {
+        setPasswordType((prevPasswordType) => 
+        prevPasswordType === 'password' ? 'text' : 'password'
+        );
+    };
 
   return (
     <div className="signup-container">
@@ -132,24 +140,31 @@ export default function SignUpForm() {
 
                 {/* Username and Password Row */}
                 <div className="form-row">
-                <input
-                    type="text"
-                    name="userName"
-                    placeholder="Username"
-                    value={formData.userName}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    disabled={loading}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    disabled={loading}
-                />
+                    <input
+                        type="text"
+                        name="userName"
+                        placeholder="Username"
+                        value={formData.userName}
+                        onChange={handleInputChange}
+                        className="form-input"
+                        disabled={loading}
+                    />
+
+                    <div className="signup-password">
+                        <input
+                            type={passwordType}
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            className="form-input"
+                            disabled={loading}
+                        />
+                        <button type="button" onClick={togglePassword} className="toggle-password">
+                            {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
+                        </button>
+                    </div>
+                
                 </div>
 
                 {/* Submit Button */}
