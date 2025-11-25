@@ -1,0 +1,185 @@
+/* Container */
+.login-verification-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+}
+
+/* Left Section */
+.login-verification-left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Background Image */
+.login-verification-cover-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+/* Overlay */
+.login-verification-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1;
+}
+
+/* Left Content */
+.login-verification-left-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 30rem;
+}
+
+.login-verification-title {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.login-verification-subtitle {
+  font-size: 1.4rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+}
+
+.login-verification-text {
+  font-size: 2rem;
+  margin-top: 1rem;
+  text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.742);
+}
+
+/* Back Button */
+.login-verification-back-button {
+    top: 20px;
+    right: 0;
+    position: absolute;
+    padding: 0.8rem 2.5rem;
+    border-top: 2px solid black;
+    border-right: none;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    background: white;
+    color: black;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.login-verification-back-button:hover {
+  background: black;
+  color: white;
+}
+
+/* Right Section */
+.login-verification-right {
+  flex: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  position: relative;
+}
+
+.login-verification-form-container {
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-verification-header {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.login-verification-description {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* Form */
+.login-verification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-verification-form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.login-verification-otp-input {
+  flex: 1;
+  padding: 0.85rem 1.2rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  background: #f9f9f9;
+}
+
+.login-verification-otp-input:focus {
+  outline: none;
+  border-color: #333;
+  background: #fff;
+}
+
+/* Submit Button */
+.login-verification-submit-button {
+  padding: 1rem 2rem;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.login-verification-submit-button:hover:not(:disabled) {
+  background: #1d1d1d;
+  transform: translateY(-2px);
+}
+
+.login-verification-submit-button:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Responsive */
+@media (max-width: 1010px) {
+  .login-verification-container {
+    flex-direction: column;
+  }
+
+  .login-verification-left {
+    min-height: 40vh;
+  }
+
+  .login-verification-title {
+    font-size: 2.5rem;
+  }
+}

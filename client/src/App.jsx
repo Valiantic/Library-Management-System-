@@ -8,9 +8,11 @@ import Home from './pages/Home.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext.jsx';
+import Login from './pages/Login.jsx'
+import LoginVerification from './components/auth/LoginVerification.jsx';
 
 function App() {
-  const { token } = useContext(AuthContext);
+  const { token, loginSessionToken } = useContext(AuthContext);
 
   return (
     <div>
@@ -18,7 +20,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />}/>
         {/* Public Routes */}
-        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/login" element={token ? <Navigate to="/home"/> : <Login/>}/>
+        <Route path="/login/verification" element={token ? <Navigate to="/home"/> : !loginSessionToken ? <Navigate to="/login" /> : <LoginVerification/>}/>
+        <Route path="/signup" element={token ? <Navigate to="/home"/> : <SignUp/>}/>
         <Route path="/signup/verification" element={<SignUpVerification/>}/>
         {/* Protected Route */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
