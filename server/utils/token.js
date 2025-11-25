@@ -8,3 +8,7 @@ export const createToken = (ID) => {
 export const generateLoginToken = () => {
     return crypto.randomBytes(32).toString('hex'); // loginToken
 } 
+
+export const generatePasswordResetToken = () => {
+    return crypto.randomBytes(32).toString('hex'); // passwordResetToken
+} 

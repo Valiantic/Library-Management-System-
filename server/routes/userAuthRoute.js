@@ -1,5 +1,5 @@
 import express from 'express';
-import { userRegistrationController, userRegisterCodeVerifyController, userLoginController, userLoginVerificationController } from '../controllers/userAuthController.js'
+import { userRegistrationController, userRegisterCodeVerifyController, userLoginController, userLoginVerificationController, userForgotPasswordRequestController, userForgotPasswordVerificationController, userResetPasswordController } from '../controllers/userAuthController.js'
 
 
 const userRouter = express.Router();
@@ -15,5 +15,16 @@ userRouter.post('/login', userLoginController);
 
 // LOGIN PROCESS
 userRouter.post('/login/verification', userLoginVerificationController);
+
+// FORGOT PASSSORD REQUEST
+userRouter.post('/forgot-password', userForgotPasswordRequestController);
+
+// FORGOT PASSSORD VERIFICATION
+userRouter.post('/forgot-password/verification', userForgotPasswordVerificationController);
+
+// PASSWORD RESET
+userRouter.post('/forgot-password/reset', userResetPasswordController);
+
+
 
 export default userRouter;

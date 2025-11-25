@@ -1,4 +1,4 @@
-import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userLoginVerificationService } from '../services/userAuthServices.js'
+import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userLoginVerificationService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
 
 // USER REGISTRATION INPUT
 export const userRegistrationController = async (req, res) => {
@@ -61,3 +61,48 @@ export const userLoginVerificationController = async (req, res) => {
     }
 }
 
+
+// USER FORGOT PASSWORD REQUEST
+export const userForgotPasswordRequestController = async (req, res) => {
+    try {
+        const {emailAddress} = req.body;
+        const result = await userForgotPasswordRequestService(emailAddress);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+// USER FORGOT PASSWORD VERIFICATION 
+export const userForgotPasswordVerificationController = async (req, res) => {
+    try {
+        const {verificationCode} = req.body;
+        const result = await userForgotPasswordVerificationService(verificationCode);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+// RESET FORGOT PASSWORD 
+export const userResetPasswordController = async (req, res) => {
+    try {
+        const {newPassword, passwordResetSessionToken} = req.body;
+        const result = await userResetPasswordService(newPassword, passwordResetSessionToken);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}

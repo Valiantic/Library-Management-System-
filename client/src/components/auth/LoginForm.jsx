@@ -5,6 +5,9 @@ import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";
 import Loading from "../Loading.jsx";
 import { assets } from "../../assets/assets";
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
+
 
 
 export default function LoginForm() {
@@ -12,7 +15,8 @@ export default function LoginForm() {
     
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [passwordType, setPasswordType] = useState('password')
 
 
     // Handle Login Submit
@@ -37,6 +41,12 @@ export default function LoginForm() {
     const handleSignUp = () => {
         navigate('/signup')
     }
+
+    const togglePassword = () => {
+        setPasswordType((prevPasswordType) => 
+        prevPasswordType === 'password' ? 'text' : 'password'
+        );
+    };
 
   return (
     <div className="login-container">
@@ -76,14 +86,25 @@ export default function LoginForm() {
                     />
 
                     {/* Password */}
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="form-input"
-                        disabled={loading}
-                    />
+                    <div className="login-password">
+                        <input
+                            type={passwordType}
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="form-input"
+                            disabled={loading}
+                        />
+
+                        <button type="button" onClick={togglePassword} className="toggle-password">
+                            {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
+                        </button>
+                    </div>
+
+                    {/* Forgot Password Button */}
+                    <p className="fp-button" onClick={() => navigate('/forgot-password')}>
+                        Forgot Password?
+                    </p>
 
                     {/* Submit Button */}
                     <button type="submit" className="login-button" disabled={loading || !userName || !password}>

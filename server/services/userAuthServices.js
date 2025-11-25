@@ -4,7 +4,7 @@ import { generateVerificationCode } from '../utils/codeGenerator.js';
 import { sendMail } from '../utils/mailer.js';
 import { validateEmail, validatePassword } from '../validators/userValidator.js';
 import { registrationEmailTemplate, loginEmailTemplate, resetPasswordEmailTemplate } from '../views/emailTemplates.js';
-import { createToken, generateLoginToken } from '../utils/token.js'
+import { createToken, generateLoginToken, generatePasswordResetToken } from '../utils/token.js'
  
 
 // USER REGISTRATION INPUT
@@ -249,6 +249,151 @@ export const userLoginVerificationService = async (loginSessionToken, verificati
             message: 'Login successfully!',
             token: authToken,
         };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+// USER FORGOT PASSWORD REQUEST
+export const userForgotPasswordRequestService = async (emailAddress) => {
+    try {
+
+        const user = await Users.findOne({ where: { emailAddress } });
+
+
+        if (!user) {
+            return {
+                success: false,
+                message: 'Please try again with another email.'
+            }
+        }
+
+        const verificationCode = generateVerificationCode();
+        const expirationTime = new Date(Date.now() + 30 * 60 * 1000); 
+
+        // Send email verification code
+        await sendMail({
+            to: user.emailAddress,
+            subject: 'Reset Password Verification',
+            html: resetPasswordEmailTemplate(user.userName, verificationCode),
+        });
+
+        // Update User Data
+        await user.update({
+            verificationCode,
+            codeExpiresAt: expirationTime
+        })
+
+        // SUCCESSFULLY SENT
+        return { 
+            success: true, 
+            message: `A verification code has been sent to your email address. Please check your inbox.`,
+        };
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+// USER FORGOT PASSWORD VERIFICATION 
+export const userForgotPasswordVerificationService = async (verificationCode) => {
+    try {
+
+        const user = await Users.findOne({where: {verificationCode}});
+
+        if (!user) {
+            return {
+                success: false,
+                message: 'Invalid verification code.'
+            };
+        }
+
+        if (new Date() > user.codeExpiresAt) {
+            await user.update({ 
+                verificationCode: null,
+                codeExpiresAt: null
+            });
+            return { 
+                success: false,
+                message: 'Verification code has expired. Please request a new one.',
+                codeExpired: true
+            };
+        }
+
+        const passwordResetSessionToken = generatePasswordResetToken();
+
+        await user.update({
+            passwordResetSessionToken
+        });
+
+        return { 
+            success: true, 
+            message: 'Code verified successfully!',
+            passwordResetSessionToken 
+        };
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+// RESET FORGOT PASSWORD 
+export const userResetPasswordService = async (newPassword, passwordResetSessionToken) => {
+    try {
+        if (!passwordResetSessionToken) {
+            return {
+                success: false,
+                message: 'Forgot password session has expired. Please restart the process.'
+            }
+        }
+
+        const user = await Users.findOne({where: { passwordResetSessionToken }});
+        if (!user) {
+            return {
+                success: false,
+                message: 'Forgot password session has expired. Please restart the process.',
+            }
+        }
+
+        if (new Date() > user.codeExpiresAt) {
+            await user.update({ 
+                verificationCode: null,
+                codeExpiresAt: null,
+                passwordResetSessionToken: null
+            });
+            return { 
+                success: false,
+                message: 'Verification code has expired. Please request a new one.',
+            };
+        }
+
+         const passwordError = validatePassword(newPassword);
+        if (passwordError) {
+            return { 
+                success: false,
+                message: passwordError
+            };
+        }
+
+        // HASHING NEW PASSWORD
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        await user.update({
+            password: hashedPassword,
+            verificationCode: null,
+            codeExpiresAt: null,
+            passwordResetSessionToken: null
+        })
+
+        return { 
+            success: true, 
+            message: 'Password updated successfully!' 
+        };
+
     } catch (error) {
         console.log(error);
         throw new Error(error.message);
