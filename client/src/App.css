@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+
+@layer utilities {
+    .table-style {
+        @apply text-sm;
+    }
+
+    .table-style thead {
+        @apply border-b h-16;
+    }
+
+    .table-style td {
+        @apply text-center p-2;
+    }
+    .table-style button{
+        @apply cursor-pointer hover:bg-gray-300 p-1 rounded-full duration-250;
+    }
+}

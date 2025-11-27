@@ -1,6 +1,9 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { Outlet } from 'react-router-dom';
+import SideMenu from '../components/SideMenu';
+import Navigation from '../components/Navigation';
 
 const Home = () => {
   const { setLoginStep, setSignUpStep, setToken, navigate, toastSuccess } = useContext(AuthContext);
@@ -11,12 +14,15 @@ const Home = () => {
     navigate('/login');
     setLoginStep(1);
     setSignUpStep(1)
-    toast.success("Logged out successfully", {...toastSuccess});
+    toast.success("Logged out successfully", { ...toastSuccess });
   }
   return (
-    <div>
-      <h1>Home Page ng mga niggers</h1>
-      <button type='button' onClick={handleLogout}>Logout</button>
+    <div className='flex min-h-[700px] h-screen'>
+      <SideMenu handleLogout={handleLogout} />
+      <div className='flex flex-col grow'>
+        <Navigation />
+        <Outlet />
+      </div>
     </div>
   )
 }
