@@ -12,6 +12,10 @@ export function AuthProvider({children}) {
   const [loginSessionToken, setLoginSessionToken] = useState(() => localStorage.getItem('loginSessionToken') || '');
   const [passwordResetSessionToken, setPasswordResetSessionToken] = useState(() => localStorage.getItem('passwordResetSessionToken') || '');
 
+  // User state for session management
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
 
   const [loginStep, setLoginStep] = useState(1);
@@ -62,7 +66,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -98,7 +102,7 @@ export function AuthProvider({children}) {
         return false;   
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
         return false;
     }
@@ -128,7 +132,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -158,7 +162,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -179,7 +183,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -204,7 +208,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -226,7 +230,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -254,6 +258,48 @@ export function AuthProvider({children}) {
       }
   }, [token, loginSessionToken, passwordResetSessionToken]);
 
+  // Fetch user info when token changes
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!token) {
+        setUser(null);
+        setUserLoading(false);
+        return;
+      }
+      
+      try {
+        setUserLoading(true);
+        const response = await axios.get(backendUrl + "/api/user/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.data.success && response.data.user) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        setUser(null);
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [token, backendUrl]);
+
+  // Logout function
+  const handleLogout = () => {
+    setToken('');
+    setUser(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('loginSessionToken');
+    localStorage.removeItem('passwordResetSessionToken');
+    toast.success("Logged out successfully", {...toastSuccess});
+    navigate('/login');
+  };
+
 
   /*-----------------------TOAST---------------------*/
   const toastSuccess = {
@@ -264,7 +310,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout
   }
 
   return (

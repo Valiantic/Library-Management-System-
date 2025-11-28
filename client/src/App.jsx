@@ -1,11 +1,11 @@
 
-import './App.css'
 import {Routes, Route, Navigate} from 'react-router-dom'
 import { ToastContainer} from 'react-toastify';
 import SignUp from './pages/SignUp.jsx'
 import SignUpVerification from './components/auth/SignUpVerification.jsx';
 import Home from './pages/Home.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import AdminProtectedRoute from './components/AdminProtectedRoute.jsx';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx'
@@ -13,6 +13,9 @@ import LoginVerification from './components/auth/LoginVerification.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ForgotPasswordVerification from './components/auth/ForgotPasswordVerification.jsx'
 import ForgotPasswordReset from './components/auth/ForgotPasswordReset.jsx'
+import Inventory from './pages/Inventory.jsx'
+import './index.css';
+
 
 function App() {
   const { token, loginSessionToken, passwordResetSessionToken } = useContext(AuthContext);
@@ -36,6 +39,11 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
+
+        {/* Admin Protected Routes */}
+        <Route path="/dashboard" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
+        <Route path="/inventory" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
+        <Route path="/membership" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
 
         <Route path="*" element={token ? <Navigate to="/home" replace/> : <Navigate to="/login" replace/>}/>
 
