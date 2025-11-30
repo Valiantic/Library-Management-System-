@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -15,7 +16,8 @@ const sequelize = new Sequelize(
 const connectToDatabase = async () => {
     try {
         await sequelize.authenticate();
-        console.log('Database connection has been established successfully.')
+        await sequelize.sync({ alter: true });
+        console.log('Database connection has been established successfully. Models are synced.')
     } catch (error) {
         console.error('Unable to connect to the database:', error);
     }

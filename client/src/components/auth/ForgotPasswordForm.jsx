@@ -44,7 +44,7 @@ export default function ForgotPasswordForm() {
             <div className="forgot-left-content">
                 <h1 className="forgot-title">CHIGGAS</h1>
                 <p className="forgot-subtitle">LIBRARY</p>
-                <p className="forgot-text">"Your premier digital library for borrowing and reading books"</p>
+                <p className="forgot-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
             </div>
         </div>
 

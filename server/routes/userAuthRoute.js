@@ -1,5 +1,6 @@
 import express from 'express';
-import { userRegistrationController, userRegisterCodeVerifyController, userLoginController, userLoginVerificationController, userForgotPasswordRequestController, userForgotPasswordVerificationController, userResetPasswordController } from '../controllers/userAuthController.js'
+import { userRegistrationController, userMeController, userRegisterCodeVerifyController, userLoginController, userForgotPasswordRequestController, userForgotPasswordVerificationController, userResetPasswordController } from '../controllers/userAuthController.js'
+import userAuth from '../middleware/userAuth.js';
 
 
 const userRouter = express.Router();
@@ -13,9 +14,6 @@ userRouter.post('/register/verification', userRegisterCodeVerifyController);
 // LOGIN PROCESS
 userRouter.post('/login', userLoginController);
 
-// LOGIN PROCESS
-userRouter.post('/login/verification', userLoginVerificationController);
-
 // FORGOT PASSSORD REQUEST
 userRouter.post('/forgot-password', userForgotPasswordRequestController);
 
@@ -25,6 +23,8 @@ userRouter.post('/forgot-password/verification', userForgotPasswordVerificationC
 // PASSWORD RESET
 userRouter.post('/forgot-password/reset', userResetPasswordController);
 
+// DISPLAY FIRSTNAME AND LASTNAME ON PAGES
+userRouter.get('/me', userAuth, userMeController);
 
 
 export default userRouter;

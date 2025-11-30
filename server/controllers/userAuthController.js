@@ -1,4 +1,5 @@
-import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userLoginVerificationService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
+import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
+import Users from '../model/User.js';
 
 // USER REGISTRATION INPUT
 export const userRegistrationController = async (req, res) => {
@@ -46,22 +47,6 @@ export const userLoginController = async (req, res) => {
     }
 }
 
-// USER LOGIN VERIFICATION
-export const userLoginVerificationController = async (req, res) => {
-    try {
-        const {loginSessionToken, verificationCode} = req.body;
-        const result = await userLoginVerificationService(loginSessionToken, verificationCode);
-        res.json(result);
-    } catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
-
 // USER FORGOT PASSWORD REQUEST
 export const userForgotPasswordRequestController = async (req, res) => {
     try {
@@ -106,3 +91,25 @@ export const userResetPasswordController = async (req, res) => {
         })
     }
 }
+
+// DISPLAY FIRSTNAME AND LASTNAME ON PAGES
+export const userMeController = async (req, res) => {
+    try {
+        if (!req.user || !req.user.ID) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+        // Fetch user from DB using ID from JWT
+        const user = await Users.findByPk(req.user.ID, {
+            attributes: ['firstName', 'lastName', 'role', 'emailAddress', 'userName']
+        });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        res.json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};

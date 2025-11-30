@@ -9,12 +9,14 @@ export function AuthProvider({children}) {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [token, setToken] = useState(() => localStorage.getItem('authToken') || '');
-  const [loginSessionToken, setLoginSessionToken] = useState(() => localStorage.getItem('loginSessionToken') || '');
   const [passwordResetSessionToken, setPasswordResetSessionToken] = useState(() => localStorage.getItem('passwordResetSessionToken') || '');
+
+  // User state for session management
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
 
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
 
-  const [loginStep, setLoginStep] = useState(1);
   const [loginData, setLoginData] = useState({
     userName: "",
     password: "",
@@ -62,7 +64,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -98,7 +100,7 @@ export function AuthProvider({children}) {
         return false;   
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
         return false;
     }
@@ -106,7 +108,7 @@ export function AuthProvider({children}) {
 
 
   // STEP #1: LOGIN PROCESS
-  const handleLoginStepOne = async (userName, password) => {
+  const handleLogin = async (userName, password) => {
     try {
       const formData = {
         userName, 
@@ -115,53 +117,19 @@ export function AuthProvider({children}) {
 
       const response = await axios.post(backendUrl + "/api/user/login", formData);
       if (response.data.success) {
-        setLoginSessionToken(response.data.loginSessionToken);
-        if (loginSessionToken) {
-          localStorage.setItem("loginSessionToken", loginSessionToken);
-        }
-
         toast.success(response.data.message, {...toastSuccess});
-        navigate('/login/verification')
-
-        setLoginStep(2);
-      } else {
-        toast.error(response.data.message, {...toastError});
-      }
-    } catch (error) {
-        console.log(error);
-        toast.error(error.message, {...toastError});
-    }
-  };
-
-
-  // STEP #2: LOGIN PROCESS
-  const handleLoginStepTwo = async (loginSessionToken, verificationCode) => {
-    try {
-      const formData = {
-        loginSessionToken, 
-        verificationCode
-      };
-
-      const response = await axios.post(backendUrl + "/api/user/login/verification", formData);
-      if (response.data.success) {
-        setLoginData({ userName: "", password: "" });
-        setLoginSessionToken('');
-        localStorage.removeItem('loginSessionToken');
-
         setToken(response.data.token);
         localStorage.setItem("authToken", response.data.token);
-        
-        toast.success(response.data.message, {...toastSuccess});
-        navigate('/home')
 
       } else {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
+
 
 
   // STEP #1: FORGOT PASSWORD
@@ -179,7 +147,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -204,7 +172,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -226,7 +194,7 @@ export function AuthProvider({children}) {
         toast.error(response.data.message, {...toastError});
       }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message, {...toastError});
     }
   };
@@ -241,18 +209,54 @@ export function AuthProvider({children}) {
         localStorage.removeItem('authToken');
       }
 
-      if (loginSessionToken) {
-        localStorage.setItem('loginSessionToken', loginSessionToken);
-      } else {
-        localStorage.removeItem('loginSessionToken');
-      }
-
       if (passwordResetSessionToken) {
         localStorage.setItem('passwordResetSessionToken', passwordResetSessionToken);
       } else {
         localStorage.removeItem('passwordResetSessionToken');
       }
-  }, [token, loginSessionToken, passwordResetSessionToken]);
+  }, [token, passwordResetSessionToken]);
+
+  // Fetch user info when token changes
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!token) {
+        setUser(null);
+        setUserLoading(false);
+        return;
+      }
+      
+      try {
+        setUserLoading(true);
+        const response = await axios.get(backendUrl + "/api/user/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.data.success && response.data.user) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        setUser(null);
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [token, backendUrl]);
+
+  // Logout function
+  const handleLogout = () => {
+    setToken('');
+    setUser(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('loginSessionToken');
+    localStorage.removeItem('passwordResetSessionToken');
+    toast.success("Logged out successfully", {...toastSuccess});
+    navigate('/login');
+  };
 
 
   /*-----------------------TOAST---------------------*/
@@ -264,7 +268,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginStep, setLoginStep, loginData, setLoginData, handleLoginStepOne, loginSessionToken, setLoginSessionToken, handleLoginStepTwo, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginData, setLoginData, handleLogin, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout
   }
 
   return (

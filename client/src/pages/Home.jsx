@@ -1,28 +1,20 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { Outlet } from 'react-router-dom';
-import SideMenu from '../components/SideMenu';
-import Navigation from '../components/Navigation';
-
 const Home = () => {
-  const { setLoginStep, setSignUpStep, setToken, navigate, toastSuccess } = useContext(AuthContext);
+  const { setSignUpStep, setToken, navigate, toastSuccess } = useContext(AuthContext);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     setToken('');
     navigate('/login');
-    setLoginStep(1);
     setSignUpStep(1)
-    toast.success("Logged out successfully", { ...toastSuccess });
+    toast.success("Logged out successfully", {...toastSuccess});
   }
   return (
-    <div className='flex min-h-[700px] h-screen'>
-      <SideMenu handleLogout={handleLogout} />
-      <div className='flex flex-col grow'>
-        <Navigation />
-        <Outlet />
-      </div>
+    <div>
+      <h1 className='home-title'>Home Page</h1>
+      <button type='button' onClick={handleLogout}>Logout</button>
     </div>
   )
 }

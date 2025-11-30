@@ -72,7 +72,7 @@ export default function ForgotPasswordReset() {
             <div className="reset-password-left-content">
                 <h1 className="reset-password-title">CHIGGAS</h1>
                 <p className="reset-password-subtitle">LIBRARY</p>
-                <p className="reset-password-text">"Your premier digital library for borrowing and reading books"</p>
+                <p className="reset-password-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
             </div>
         </div>
 

@@ -55,7 +55,7 @@ export default function ForgotPasswordVerification() {
             <div className="forgot-verification-left-content">
                 <h1 className="forgot-verification-title">CHIGGAS</h1>
                 <p className="forgot-verification-subtitle">LIBRARY</p>
-                <p className="forgot-verification-text">"Your premier digital library for borrowing and reading books"</p>
+                <p className="forgot-verification-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
             </div>
         </div>
 
