@@ -60,7 +60,7 @@ export default function LoginForm() {
             <div className="login-left-content">
                 <h1 className="library-title">CHIGGAS</h1>
                 <p className="library-subtitle">LIBRARY</p>
-                <p className="login-prompt">New to our platform? Sign Up now.</p>
+                <p className="signup-verification-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
                 <button className="login-signup-button" onClick={handleSignUp}>
                     SIGN UP
                 </button>

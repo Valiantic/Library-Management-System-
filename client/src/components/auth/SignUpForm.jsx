@@ -90,6 +90,7 @@ export default function SignUpForm() {
             <div className="signup-left-content">
                 <h1 className="library-title">CHIGGAS</h1>
                 <p className="library-subtitle">LIBRARY</p>
+                <p className="forgot-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
                 <p className="signin-prompt">Already have Account? Sign in now.</p>
                 <button className="signin-button" onClick={handleSignIn}>
                 SIGN IN
