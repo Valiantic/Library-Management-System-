@@ -9,7 +9,6 @@ import AdminProtectedRoute from './components/AdminProtectedRoute.jsx';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx'
-import LoginVerification from './components/auth/LoginVerification.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ForgotPasswordVerification from './components/auth/ForgotPasswordVerification.jsx'
 import ForgotPasswordReset from './components/auth/ForgotPasswordReset.jsx'
@@ -18,7 +17,7 @@ import './index.css';
 
 
 function App() {
-  const { token, loginSessionToken, passwordResetSessionToken } = useContext(AuthContext);
+  const { token, passwordResetSessionToken } = useContext(AuthContext);
   const cannotResetPassword = token || !passwordResetSessionToken;
 
   return (
@@ -30,7 +29,6 @@ function App() {
 
         {/* Public Routes */}
         <Route path="/login" element={token ? <Navigate to="/home" replace /> : <Login/>}/>
-        <Route path="/login/verification" element={token ? <Navigate to="/home" replace /> : !loginSessionToken ? <Navigate to="/login" replace /> : <LoginVerification/>}/>
         <Route path="/signup" element={token ? <Navigate to="/home" replace /> : <SignUp/>}/>
         <Route path="/signup/verification" element={token ? <Navigate to="/home" replace /> : <SignUpVerification/>}/>
         <Route path="/forgot-password" element={token ? <Navigate to="/home" replace /> : <ForgotPassword/>}/>

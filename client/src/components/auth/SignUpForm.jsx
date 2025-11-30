@@ -160,7 +160,7 @@ export default function SignUpForm() {
                             className="form-input"
                             disabled={loading}
                         />
-                        <button type="button" onClick={togglePassword} className="toggle-password">
+                        <button type="button" onClick={togglePassword} className="toggle-password-btn-signup">
                             {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
                         </button>
                     </div>

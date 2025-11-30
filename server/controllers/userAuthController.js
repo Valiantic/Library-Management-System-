@@ -1,4 +1,4 @@
-import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userLoginVerificationService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
+import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
 import Users from '../model/User.js';
 
 // USER REGISTRATION INPUT
@@ -46,22 +46,6 @@ export const userLoginController = async (req, res) => {
         })
     }
 }
-
-// USER LOGIN VERIFICATION
-export const userLoginVerificationController = async (req, res) => {
-    try {
-        const {loginSessionToken, verificationCode} = req.body;
-        const result = await userLoginVerificationService(loginSessionToken, verificationCode);
-        res.json(result);
-    } catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
 
 // USER FORGOT PASSWORD REQUEST
 export const userForgotPasswordRequestController = async (req, res) => {

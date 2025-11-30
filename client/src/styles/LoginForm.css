@@ -126,15 +126,20 @@
   position: relative;
 }
 
-.login-password .toggle-password {
+.login-password .toggle-password-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 0;
+  right: 10px;
   border: none;
   background: none;
   color: #000;
   cursor: pointer;
   font-size: 1.3rem;
+  padding: 1rem 0.5rem;
+}
+
+.login-password .toggle-password-btn:focus {
+  outline: none;
 }
 
 .form-input {

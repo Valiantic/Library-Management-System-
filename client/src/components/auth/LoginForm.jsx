@@ -11,7 +11,7 @@ import { IoIosEyeOff } from "react-icons/io";
 
 
 export default function LoginForm() {
-    const {handleLoginStepOne, navigate, toastError} = useContext(AuthContext)
+    const {handleLogin, navigate, toastError} = useContext(AuthContext)
     
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
@@ -34,7 +34,7 @@ export default function LoginForm() {
         }
 
         setLoading(true);
-        await handleLoginStepOne(userName, password);
+        await handleLogin(userName, password);
         setLoading(false);
     };
 
@@ -96,7 +96,7 @@ export default function LoginForm() {
                             disabled={loading}
                         />
 
-                        <button type="button" onClick={togglePassword} className="toggle-password">
+                        <button type="button" onClick={togglePassword} className="toggle-password-btn">
                             {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
                         </button>
                     </div>
