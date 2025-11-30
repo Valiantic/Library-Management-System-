@@ -12,7 +12,9 @@ import Login from './pages/Login.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
 import ForgotPasswordVerification from './components/auth/ForgotPasswordVerification.jsx'
 import ForgotPasswordReset from './components/auth/ForgotPasswordReset.jsx'
+import Dashboard from './pages/Dashboard.jsx'
 import Inventory from './pages/Inventory.jsx'
+import Membership from './pages/Membership.jsx'
 import './index.css';
 
 
@@ -39,9 +41,9 @@ function App() {
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
 
         {/* Admin Protected Routes */}
-        <Route path="/dashboard" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
+        <Route path="/dashboard" element={<AdminProtectedRoute><Dashboard /></AdminProtectedRoute>}/>
         <Route path="/inventory" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
-        <Route path="/membership" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
+        <Route path="/membership" element={<AdminProtectedRoute><Membership /></AdminProtectedRoute>}/>
 
         <Route path="*" element={token ? <Navigate to="/home" replace/> : <Navigate to="/login" replace/>}/>
 
