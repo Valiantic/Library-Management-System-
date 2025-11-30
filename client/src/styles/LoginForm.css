@@ -68,7 +68,7 @@
 }
 
 .login-signup-button {
-  padding: 0.80rem 4rem;
+ padding: 0.80rem 2rem;
   border: 2px solid white;
   background: transparent;
   color: white;
@@ -79,6 +79,11 @@
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: #000;
+  min-width: 120px;
+  max-width: 300px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .login-signup-button:hover {
@@ -120,6 +125,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  color: #000;
 }
 
 .login-password {

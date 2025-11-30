@@ -111,11 +111,12 @@
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
+  color: #1d1d1d;
 }
 
 .signup-verification-description {
   text-align: center;
-  color: #666;
+  color: #1d1d1d;
   margin-bottom: 2rem;
 }
 
@@ -124,6 +125,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  color: black;
 }
 
 .signup-verification-form-row {

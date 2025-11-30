@@ -3,8 +3,8 @@ import { addBookService, getAllBooksService, getBookByIdService, updateBookServi
 // ADD BOOK
 export const addBookController = async (req, res) => {
     try {
-        const { name, language, type, quantity } = req.body;
-        const result = await addBookService(name, language, type, quantity);
+        const { bookName, author, category, quantity } = req.body;
+        const result = await addBookService(bookName, author, category, quantity);
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -49,8 +49,8 @@ export const getBookByIdController = async (req, res) => {
 export const updateBookController = async (req, res) => {
     try {
         const { bookId } = req.params;
-        const { name, language, type, quantity } = req.body;
-        const result = await updateBookService(bookId, name, language, type, quantity);
+        const { bookName, author, category, quantity } = req.body;
+        const result = await updateBookService(bookId, bookName, author, category, quantity);
         res.json(result);
     } catch (error) {
         console.log(error);
