@@ -90,6 +90,7 @@ export default function SignUpForm() {
             <div className="signup-left-content">
                 <h1 className="library-title">CHIGGAS</h1>
                 <p className="library-subtitle">LIBRARY</p>
+                <p className="forgot-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
                 <p className="signin-prompt">Already have Account? Sign in now.</p>
                 <button className="signin-button" onClick={handleSignIn}>
                 SIGN IN
@@ -160,7 +161,7 @@ export default function SignUpForm() {
                             className="form-input"
                             disabled={loading}
                         />
-                        <button type="button" onClick={togglePassword} className="toggle-password">
+                        <button type="button" onClick={togglePassword} className="toggle-password-btn-signup">
                             {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
                         </button>
                     </div>

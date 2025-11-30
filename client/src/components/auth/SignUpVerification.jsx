@@ -63,7 +63,7 @@ export default function SignUpVerification() {
             <div className="signup-verification-left-content">
                 <h1 className="signup-verification-title">CHIGGAS</h1>
                 <p className="signup-verification-subtitle">LIBRARY</p>
-                <p className="signup-verification-text">""Your premier digital library for borrowing and reading books""</p>
+                <p className="signup-verification-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
             </div>
         </div>
 
