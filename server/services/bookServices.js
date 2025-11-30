@@ -2,10 +2,10 @@ import Books from '../model/Book.js';
 import { Op } from 'sequelize';
 
 // ADD NEW BOOK
-export const addBookService = async (name, language, type, quantity) => {
+export const addBookService = async (bookName, author, category, quantity) => {
     try {
         // Validate input
-        if (!name || !language || !type || quantity === undefined) {
+        if (!bookName || !author || !category || quantity === undefined) {
             return {
                 success: false,
                 message: 'All fields are required'
@@ -22,9 +22,9 @@ export const addBookService = async (name, language, type, quantity) => {
 
         // Create new book
         const newBook = await Books.create({
-            name: name.trim(),
-            language: language.trim(),
-            type: type.trim(),
+            bookName: bookName.trim(),
+            author: author.trim(),
+            category: category.trim(),
             quantity: Number(quantity)
         });
 
@@ -33,9 +33,9 @@ export const addBookService = async (name, language, type, quantity) => {
             message: 'Book added successfully',
             book: {
                 bookId: newBook.bookId,
-                name: newBook.name,
-                language: newBook.language,
-                type: newBook.type,
+                bookName: newBook.bookName,
+                author: newBook.author,
+                category: newBook.category,
                 quantity: newBook.quantity,
                 createdAt: newBook.createdAt
             }
@@ -54,13 +54,12 @@ export const getAllBooksService = async (searchQuery = '') => {
     try {
         let whereClause = {};
 
-        // If search query exists, search in name, language, or type
         if (searchQuery && searchQuery.trim() !== '') {
             whereClause = {
                 [Op.or]: [
-                    { name: { [Op.like]: `%${searchQuery.trim()}%` } },
-                    { language: { [Op.like]: `%${searchQuery.trim()}%` } },
-                    { type: { [Op.like]: `%${searchQuery.trim()}%` } }
+                    { bookName: { [Op.like]: `%${searchQuery.trim()}%` } },
+                    { author: { [Op.like]: `%${searchQuery.trim()}%` } },
+                    { category: { [Op.like]: `%${searchQuery.trim()}%` } }
                 ]
             };
         }
@@ -68,7 +67,7 @@ export const getAllBooksService = async (searchQuery = '') => {
         const books = await Books.findAll({
             where: whereClause,
             order: [['createdAt', 'DESC']],
-            attributes: ['bookId', 'name', 'language', 'type', 'quantity', 'createdAt', 'updatedAt']
+            attributes: ['bookId', 'bookName', 'author', 'category', 'quantity', 'createdAt', 'updatedAt']
         });
 
         return {
@@ -112,7 +111,7 @@ export const getBookByIdService = async (bookId) => {
 };
 
 // UPDATE BOOK
-export const updateBookService = async (bookId, name, language, type, quantity) => {
+export const updateBookService = async (bookId, bookName, author, category, quantity) => {
     try {
         const book = await Books.findByPk(bookId);
 
@@ -133,9 +132,9 @@ export const updateBookService = async (bookId, name, language, type, quantity) 
 
         // Update book
         await book.update({
-            name: name?.trim() || book.name,
-            language: language?.trim() || book.language,
-            type: type?.trim() || book.type,
+            bookName: bookName?.trim() || book.bookName,
+            author: author?.trim() || book.author,
+            category: category?.trim() || book.category,
             quantity: quantity !== undefined ? Number(quantity) : book.quantity
         });
 

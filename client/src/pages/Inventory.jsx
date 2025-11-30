@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
 import AddBookModal from "../components/AddBookModal";
+import EditBookModal from "../components/EditBookModal";
+import DeleteBookModal from "../components/DeleteBookModal";
 import { MdAdd, MdEdit, MdDelete, MdBookmark, MdSearch } from "react-icons/md";
 import { getAllBooks } from "../services/bookService";
 
 export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false);
+  const [isEditBookModalOpen, setIsEditBookModalOpen] = useState(false);
+  const [isDeleteBookModalOpen, setIsDeleteBookModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +38,24 @@ export default function Inventory() {
   }, [searchQuery]);
 
   const handleBookAdded = () => {
+    fetchBooks();
+  };
+
+  const handleEditClick = (book) => {
+    setSelectedBook(book);
+    setIsEditBookModalOpen(true);
+  };
+
+  const handleDeleteClick = (book) => {
+    setSelectedBook(book);
+    setIsDeleteBookModalOpen(true);
+  };
+
+  const handleBookUpdated = () => {
+    fetchBooks();
+  };
+
+  const handleBookDeleted = () => {
     fetchBooks();
   };
 
@@ -82,10 +105,10 @@ return (
                                         Book Name
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Language
+                                        Author
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Type
+                                        Category
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quantity
@@ -115,13 +138,13 @@ return (
                                     books.map((book) => (
                                         <tr key={book.bookId} className="hover:bg-gray-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm font-medium text-gray-900">{book.name}</div>
+                                                <div className="text-sm font-medium text-gray-900">{book.bookName}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-500">{book.language}</div>
+                                                <div className="text-sm text-gray-500">{book.author}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="text-sm text-gray-500">{book.type}</div>
+                                                <div className="text-sm text-gray-500">{book.category}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -130,10 +153,16 @@ return (
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div className="flex items-center gap-2">
-                                                    <button className="text-blue-600 hover:text-blue-900">
+                                                    <button 
+                                                        onClick={() => handleEditClick(book)}
+                                                        className="text-blue-600 hover:text-blue-900"
+                                                    >
                                                         <MdEdit className="w-5 h-5" />
                                                     </button>
-                                                    <button className="text-red-600 hover:text-red-900">
+                                                    <button 
+                                                        onClick={() => handleDeleteClick(book)}
+                                                        className="text-red-600 hover:text-red-900"
+                                                    >
                                                         <MdDelete className="w-5 h-5" />
                                                     </button>
                                                 </div>
@@ -154,6 +183,28 @@ return (
             isOpen={isAddBookModalOpen}
             onClose={() => setIsAddBookModalOpen(false)}
             onBookAdded={handleBookAdded}
+        />
+
+        {/* Edit Book Modal */}
+        <EditBookModal
+            isOpen={isEditBookModalOpen}
+            onClose={() => {
+                setIsEditBookModalOpen(false);
+                setSelectedBook(null);
+            }}
+            book={selectedBook}
+            onBookUpdated={handleBookUpdated}
+        />
+
+        {/* Delete Book Modal */}
+        <DeleteBookModal
+            isOpen={isDeleteBookModalOpen}
+            onClose={() => {
+                setIsDeleteBookModalOpen(false);
+                setSelectedBook(null);
+            }}
+            book={selectedBook}
+            onBookDeleted={handleBookDeleted}
         />
     </div>
 );

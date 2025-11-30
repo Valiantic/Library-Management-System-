@@ -10,33 +10,27 @@ const Books = sequelize.define(
       autoIncrement: true,
       allowNull: false,
     },
-
-    name: {
+    bookName: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-
-    language: {
+    author: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    category: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-
-    type: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-
     quantity: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
     },
-
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
-
     updatedAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
