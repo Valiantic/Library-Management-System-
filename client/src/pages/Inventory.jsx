@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
@@ -68,19 +69,19 @@ return (
         <div className="flex-1 flex flex-col">
             <TopBar />
 
-            <div className="p-8 mt-6">
-                <div className="flex items-center justify-between mb-6">
+            <div className="p-4">
+                <div className="flex flex-wrap gap-8 items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">Book Management</h2>
 
-                    <div className="flex items-center space-x-3">
-                        <div className="relative">
+                    <div className="grow flex flex-wrap gap-4 items-center space-x-3">
+                        <div className="flex grow relative">
                             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search books..."
-                                className="pl-10 pr-4 py-2 text-black rounded-md border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="grow pl-10 pr-4 py-2 text-black rounded-md border border-gray-400 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
 
