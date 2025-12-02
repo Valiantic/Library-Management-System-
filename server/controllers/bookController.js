@@ -1,4 +1,4 @@
-import { addBookService, getAllBooksService, getBookByIdService, updateBookService, deleteBookService } from '../services/bookServices.js';
+import { addBookService, getAllBooksService, getBookByIdService, updateBookService, deleteBookService, toggleBookStatusService } from '../services/bookServices.js';
 
 // ADD BOOK
 export const addBookController = async (req, res) => {
@@ -18,8 +18,8 @@ export const addBookController = async (req, res) => {
 // GET ALL BOOKS
 export const getAllBooksController = async (req, res) => {
     try {
-        const { search } = req.query;
-        const result = await getAllBooksService(search);
+        const { search, showArchived } = req.query;
+        const result = await getAllBooksService(search, showArchived === 'true');
         res.json(result);
     } catch (error) {
         console.log(error);
@@ -66,6 +66,21 @@ export const deleteBookController = async (req, res) => {
     try {
         const { bookId } = req.params;
         const result = await deleteBookService(bookId);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// TOGGLE BOOK STATUS (Archive/Unarchive)
+export const toggleBookStatusController = async (req, res) => {
+    try {
+        const { bookId } = req.params;
+        const result = await toggleBookStatusService(bookId);
         res.json(result);
     } catch (error) {
         console.log(error);

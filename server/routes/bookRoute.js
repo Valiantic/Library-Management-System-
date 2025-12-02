@@ -1,5 +1,5 @@
 import express from 'express';
-import { addBookController, getAllBooksController, getBookByIdController, updateBookController, deleteBookController } from '../controllers/bookController.js';
+import { addBookController, getAllBooksController, getBookByIdController, updateBookController, deleteBookController, toggleBookStatusController } from '../controllers/bookController.js';
 
 const bookRouter = express.Router();
 
@@ -17,5 +17,8 @@ bookRouter.put('/update/:bookId', updateBookController);
 
 // DELETE BOOK
 bookRouter.delete('/delete/:bookId', deleteBookController);
+
+// TOGGLE BOOK STATUS (Archive/Unarchive)
+bookRouter.put('/toggle-status/:bookId', toggleBookStatusController);
 
 export default bookRouter;

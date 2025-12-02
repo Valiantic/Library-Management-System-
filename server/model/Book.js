@@ -35,6 +35,11 @@ const Books = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
+    status: {
+      type: DataTypes.ENUM('active', 'archived'),
+      defaultValue: 'active',
+      allowNull: false,
+    },
   },
   {
     tableName: 'books',

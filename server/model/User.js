@@ -77,6 +77,12 @@ const Users = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
+
+    status: {
+      type: DataTypes.ENUM('active', 'archived'),
+      defaultValue: 'active',
+      allowNull: false,
+    },
   },
   {
     tableName: 'users',

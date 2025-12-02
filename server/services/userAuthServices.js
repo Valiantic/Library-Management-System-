@@ -1,3 +1,61 @@
+// ADMIN UPDATE USER SERVICE
+export const updateUserService = async (userId, { firstName, lastName, emailAddress, userName, password, role, status }) => {
+    try {
+        const user = await Users.findByPk(userId);
+        if (!user) return { success: false, message: 'User not found.' };
+
+        // Check for email/username conflicts (if changed)
+        if (emailAddress && emailAddress !== user.emailAddress) {
+            const existingEmail = await Users.findOne({ where: { emailAddress } });
+            if (existingEmail) return { success: false, message: 'This email is already registered.' };
+        }
+        if (userName && userName !== user.userName) {
+            const existingUserName = await Users.findOne({ where: { userName } });
+            if (existingUserName) return { success: false, message: 'This username is already in use! Please try another one.' };
+        }
+
+        // Validate and hash password if provided
+        let updateFields = { firstName, lastName, emailAddress, userName, role };
+        
+        // Add status if provided
+        if (status) {
+            updateFields.status = status;
+        }
+        
+        if (password && password.length > 0) {
+            const passwordError = validatePassword(password);
+            if (passwordError) return { success: false, message: passwordError };
+            const salt = await bcrypt.genSalt(10);
+            updateFields.password = await bcrypt.hash(password, salt);
+        }
+
+        await user.update(updateFields);
+        return { success: true, user, message: 'User updated successfully.' };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+};
+
+// ADMIN TOGGLE USER STATUS SERVICE (Archive/Unarchive)
+export const toggleUserStatusService = async (userId) => {
+    try {
+        const user = await Users.findByPk(userId);
+        if (!user) return { success: false, message: 'User not found.' };
+
+        const newStatus = user.status === 'active' ? 'archived' : 'active';
+        await user.update({ status: newStatus });
+
+        return { 
+            success: true, 
+            message: newStatus === 'archived' ? 'User account archived successfully.' : 'User account activated successfully.',
+            status: newStatus
+        };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+};
 import bcrypt from 'bcrypt';
 import Users from '../model/User.js';
 import { generateVerificationCode } from '../utils/codeGenerator.js';
@@ -159,6 +217,11 @@ export const userLoginService = async (userName, password) => {
 
         if (!user) {
             return {success: false, message: 'Your account and/or password is incorrect, please try again'};
+        }
+
+        // Check if user account is archived
+        if (user.status === 'archived') {
+            return {success: false, message: 'Your account has been archived. Please contact an administrator.'};
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -326,3 +389,61 @@ export const userResetPasswordService = async (newPassword, passwordResetSession
         throw new Error(error.message);
     }
 }
+
+// GET ALL USERS SERVICE
+export const getAllUsersService = async () => {
+    try {
+        // Only select relevant fields for display
+        const users = await Users.findAll({
+            attributes: [
+                'userId',
+                'firstName',
+                'lastName',
+                'emailAddress',
+                'userName',
+                'role',
+                'status',
+                'verifiedUser'
+            ]
+        });
+        return { success: true, users };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+};
+
+// ADMIN ADD USER SERVICE (no OTP)
+export const addUserService = async ({ firstName, lastName, emailAddress, userName, password, role }) => {
+    try {
+        if (!firstName || !lastName || !emailAddress || !userName || !password || !role) {
+            return { success: false, message: 'All fields are required.' };
+        }
+        // Check for existing email or username
+        const existingEmail = await Users.findOne({ where: { emailAddress } });
+        if (existingEmail) {
+            return { success: false, message: 'This email is already registered.' };
+        }
+        const existingUserName = await Users.findOne({ where: { userName } });
+        if (existingUserName) {
+            return { success: false, message: 'This username is already in use! Please try another one.' };
+        }
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        // Create user
+        const newUser = await Users.create({
+            firstName,
+            lastName,
+            emailAddress,
+            userName,
+            password: hashedPassword,
+            role,
+            verifiedUser: true
+        });
+        return { success: true, user: newUser };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+};

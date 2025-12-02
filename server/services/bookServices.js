@@ -50,24 +50,30 @@ export const addBookService = async (bookName, author, category, quantity) => {
 };
 
 // GET ALL BOOKS
-export const getAllBooksService = async (searchQuery = '') => {
+export const getAllBooksService = async (searchQuery = '', showArchived = false) => {
     try {
-        let whereClause = {};
+        let whereClause = {
+            status: showArchived ? 'archived' : 'active'
+        };
 
         if (searchQuery && searchQuery.trim() !== '') {
-            whereClause = {
-                [Op.or]: [
-                    { bookName: { [Op.like]: `%${searchQuery.trim()}%` } },
-                    { author: { [Op.like]: `%${searchQuery.trim()}%` } },
-                    { category: { [Op.like]: `%${searchQuery.trim()}%` } }
-                ]
-            };
+            whereClause[Op.and] = [
+                { status: showArchived ? 'archived' : 'active' },
+                {
+                    [Op.or]: [
+                        { bookName: { [Op.like]: `%${searchQuery.trim()}%` } },
+                        { author: { [Op.like]: `%${searchQuery.trim()}%` } },
+                        { category: { [Op.like]: `%${searchQuery.trim()}%` } }
+                    ]
+                }
+            ];
+            delete whereClause.status;
         }
 
         const books = await Books.findAll({
             where: whereClause,
             order: [['createdAt', 'DESC']],
-            attributes: ['bookId', 'bookName', 'author', 'category', 'quantity', 'createdAt', 'updatedAt']
+            attributes: ['bookId', 'bookName', 'author', 'category', 'quantity', 'status', 'createdAt', 'updatedAt']
         });
 
         return {
@@ -175,6 +181,35 @@ export const deleteBookService = async (bookId) => {
         return {
             success: false,
             message: 'Failed to delete book'
+        };
+    }
+};
+
+// TOGGLE BOOK STATUS (Archive/Unarchive)
+export const toggleBookStatusService = async (bookId) => {
+    try {
+        const book = await Books.findByPk(bookId);
+
+        if (!book) {
+            return {
+                success: false,
+                message: 'Book not found'
+            };
+        }
+
+        const newStatus = book.status === 'active' ? 'archived' : 'active';
+        await book.update({ status: newStatus });
+
+        return {
+            success: true,
+            message: newStatus === 'archived' ? 'Book archived successfully' : 'Book unarchived successfully',
+            status: newStatus
+        };
+    } catch (error) {
+        console.error('Error in toggleBookStatusService:', error);
+        return {
+            success: false,
+            message: 'Failed to update book status'
         };
     }
 };
