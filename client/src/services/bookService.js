@@ -17,10 +17,10 @@ export const addBook = async (bookData) => {
 };
 
 // GET ALL BOOKS
-export const getAllBooks = async (searchQuery = '') => {
+export const getAllBooks = async (searchQuery = '', showArchived = false) => {
     try {
         const response = await axios.get(`${API_URL}/api/book/all`, {
-            params: { search: searchQuery }
+            params: { search: searchQuery, showArchived: showArchived }
         });
         return response.data;
     } catch (error) {
@@ -71,6 +71,20 @@ export const deleteBook = async (bookId) => {
         return {
             success: false,
             message: error.response?.data?.message || 'Failed to delete book'
+        };
+    }
+};
+
+// TOGGLE BOOK STATUS (Archive/Unarchive)
+export const toggleBookStatus = async (bookId) => {
+    try {
+        const response = await axios.put(`${API_URL}/api/book/toggle-status/${bookId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error toggling book status:', error);
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to update book status'
         };
     }
 };

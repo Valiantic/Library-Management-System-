@@ -1,3 +1,27 @@
+import { updateUserService, toggleUserStatusService } from '../services/userAuthServices.js';
+// ADMIN UPDATE USER CONTROLLER
+export const updateUserController = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const result = await updateUserService(userId, req.body);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ADMIN TOGGLE USER STATUS CONTROLLER (Archive/Unarchive)
+export const toggleUserStatusController = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const result = await toggleUserStatusService(userId);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+import { addUserService } from '../services/userAuthServices.js';
+import { getAllUsersService } from '../services/userAuthServices.js';
 import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
 import Users from '../model/User.js';
 
@@ -111,5 +135,27 @@ export const userMeController = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// GET ALL USERS CONTROLLER
+export const getAllUsersController = async (req, res) => {
+    try {
+        // Optionally, add admin check here if needed: if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: 'Forbidden' });
+        const result = await getAllUsersService();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ADMIN ADD USER CONTROLLER (no OTP)
+export const addUserController = async (req, res) => {
+    try {
+        // Optionally, check if req.user.role is admin
+        const result = await addUserService(req.body);
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 };

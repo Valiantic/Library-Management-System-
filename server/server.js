@@ -3,11 +3,12 @@ import cors from 'cors';
 import 'dotenv/config'
 import { connectToDatabase } from './config/sequelize.js'
 import userRouter from './routes/userAuthRoute.js'
-import bookRouter from './routes/bookRoute.js' 
+import bookRouter from './routes/bookRoute.js'
+import dashboardRouter from './routes/dashboardRoute.js' 
 
 // APP CONFIG
 const app = express();
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8000;
 
 
 // MIDDLEWARE
@@ -20,6 +21,9 @@ app.use('/api/user', userRouter);
 
 // BOOK ROUTES
 app.use('/api/book', bookRouter);
+
+// DASHBOARD ROUTES
+app.use('/api/dashboard', dashboardRouter);
 
 
 // TEST

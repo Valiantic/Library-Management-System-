@@ -1,30 +1,23 @@
 import { useState } from 'react';
-import { X, AlertTriangle } from 'lucide-react';
-import { deleteBook } from '../services/bookService';
+import { X, AlertTriangle, Archive, UserCheck } from 'lucide-react';
 
-export default function DeleteBookModal({ isOpen, onClose, book, onBookDeleted }) {
+export default function ArchiveMemberModal({ isOpen, onClose, member, onToggleStatus }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleDelete = async () => {
-    if (!book) return;
+  const isArchived = member?.status === 'archived';
+
+  const handleToggleStatus = async () => {
+    if (!member) return;
 
     setLoading(true);
     setError('');
 
     try {
-      const result = await deleteBook(book.bookId);
-
-      if (result.success) {
-        onClose();
-        if (onBookDeleted) {
-          onBookDeleted();
-        }
-      } else {
-        setError(result.message || 'Failed to delete book');
-      }
+      await onToggleStatus();
+      onClose();
     } catch (err) {
-      setError('An error occurred while deleting the book');
+      setError(err.message || `Failed to ${isArchived ? 'activate' : 'archive'} user`);
     } finally {
       setLoading(false);
     }
@@ -35,8 +28,6 @@ export default function DeleteBookModal({ isOpen, onClose, book, onBookDeleted }
     setError('');
   };
 
-  if (!isOpen || !book) return null;
-
   // Close modal if click on backdrop
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -44,15 +35,23 @@ export default function DeleteBookModal({ isOpen, onClose, book, onBookDeleted }
     }
   };
 
+  if (!isOpen || !member) return null;
+
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50" onMouseDown={handleBackdropClick}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm" onMouseDown={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="bg-red-100 p-2 rounded-lg">
-              <AlertTriangle className="w-5 h-5 text-red-700" />
+            <div className={`${isArchived ? 'bg-green-100' : 'bg-orange-100'} p-2 rounded-lg`}>
+              {isArchived ? (
+                <UserCheck className="w-5 h-5 text-green-700" />
+              ) : (
+                <Archive className="w-5 h-5 text-orange-700" />
+              )}
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Delete Book</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {isArchived ? 'Activate User' : 'Archive User'}
+            </h2>
           </div>
           <button
             onClick={handleCancel}
@@ -71,18 +70,22 @@ export default function DeleteBookModal({ isOpen, onClose, book, onBookDeleted }
 
           <div className="text-center">
             <p className="text-gray-700 mb-2">
-              Are you sure you want to delete this book?
+              {isArchived 
+                ? 'Are you sure you want to activate this user?' 
+                : 'Are you sure you want to archive this user?'}
             </p>
             <p className="text-lg font-semibold text-gray-900">
-              "{book.bookName}"
+              {member.firstName} {member.lastName}
             </p>
             <p className="text-sm text-gray-500 mt-1">
-              by {book.author}
+              @{member.userName}
             </p>
           </div>
 
-          <p className="text-sm text-red-600 text-center">
-            This action cannot be undone.
+          <p className={`text-sm ${isArchived ? 'text-green-600' : 'text-orange-600'} text-center`}>
+            {isArchived 
+              ? 'This user will be able to login again.' 
+              : 'Archived users cannot login to the system.'}
           </p>
 
           <div className="grid grid-cols-2 gap-3 pt-2">
@@ -95,11 +98,11 @@ export default function DeleteBookModal({ isOpen, onClose, book, onBookDeleted }
             </button>
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={handleToggleStatus}
               disabled={loading}
-              className="px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`px-4 py-3 ${isArchived ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              {loading ? 'DELETING...' : 'DELETE'}
+              {loading ? (isArchived ? 'ACTIVATING...' : 'ARCHIVING...') : (isArchived ? 'ACTIVATE' : 'ARCHIVE')}
             </button>
           </div>
         </div>
