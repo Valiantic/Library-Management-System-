@@ -22,7 +22,7 @@ export const toggleUserStatusController = async (req, res) => {
 };
 import { addUserService } from '../services/userAuthServices.js';
 import { getAllUsersService } from '../services/userAuthServices.js';
-import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService } from '../services/userAuthServices.js'
+import { userRegistrationService, userRegisterCodeVerifyService, userLoginService, userForgotPasswordRequestService, userForgotPasswordVerificationService, userResetPasswordService, updateStudentPasswordService } from '../services/userAuthServices.js'
 import Users from '../model/User.js';
 
 // USER REGISTRATION INPUT
@@ -159,3 +159,19 @@ export const addUserController = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+export const updateStudentPasswordController = async (req, res) => {
+    try {
+        const { ID } = req.user;
+        const {currentPassword, newPassword} = req.body;
+        const result = await updateStudentPasswordService(ID, currentPassword, newPassword);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}

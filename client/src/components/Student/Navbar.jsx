@@ -1,11 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { FaUser } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import { updateStudentPassword } from '../../services/userService.js';
+import {toast} from "react-toastify"
+import { AuthContext } from '../../context/AuthContext.jsx';
+import Loading from '../Loading.jsx'
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
 
 const Navbar = () => {
+  const { toastSuccess, toastError, token } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
+  const togglePassword = (field) => {
+    setShowPassword(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+
+  
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -53,16 +78,51 @@ const Navbar = () => {
       newPassword: '',
       confirmPassword: ''
     });
+    setShowPassword({
+      current: false,
+      new: false,
+      confirm: false
+    });
   };
 
-  const handleConfirm = () => {
-    // Add your password change logic here
-    console.log('Password change confirmed', formData);
-    handleCancel();
+
+  const handleConfirm = async () => {
+    const { currentPassword, newPassword, confirmPassword } = formData;
+
+    // Basic validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("All fields are required", { ...toastError });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New password and confirmation do not match", { ...toastError });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const payload = { currentPassword, newPassword};      
+      const result = await updateStudentPassword(payload, token);
+      
+      if (result.success) {
+        toast.success(result.message, {...toastSuccess});
+        handleCancel();
+      } else {
+        toast.error(result.message, {...toastError});
+      }
+
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.", { ...toastError });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
+    {loading && <Loading/>}
       {/* Navbar */}
       <nav className="bg-white shadow-sm px-4 py-3 sm:px-6 lg:px-8 pl-6">
         <div className="flex items-center justify-between">
@@ -125,29 +185,52 @@ const Navbar = () => {
                 <label className="text-sm sm:text-base font-medium sm:w-48 flex-shrink-0">
                   Enter Current Password
                 </label>
-                <input
-                  type="password"
-                  name="currentPassword"
-                  value={formData.currentPassword}
-                  onChange={handleInputChange}
-                  placeholder="Enter Current Password"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
-                />
+
+                <div className="relative flex-1">
+                  <input
+                    type={showPassword.current ? "text" : "password"}
+                    name="currentPassword"
+                    value={formData.currentPassword}
+                    onChange={handleInputChange}
+                    placeholder="Enter Current Password"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => togglePassword("current")}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword.current ? <IoIosEyeOff size={20} /> : <IoIosEye size={20} />}
+                  </button>
+                </div>
               </div>
+
 
               {/* New Password */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <label className="text-sm sm:text-base font-medium sm:w-48 flex-shrink-0">
                   Enter New Password
                 </label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={formData.newPassword}
-                  onChange={handleInputChange}
-                  placeholder="Enter New Password"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
-                />
+
+                <div className="relative flex-1">
+                  <input
+                    type={showPassword.new ? "text" : "password"}
+                    name="newPassword"
+                    value={formData.newPassword}
+                    onChange={handleInputChange}
+                    placeholder="Enter New Password"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => togglePassword("new")}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword.new ? <IoIosEyeOff size={20} /> : <IoIosEye size={20} />}
+                  </button>
+                </div>
               </div>
 
               {/* Confirm New Password */}
@@ -155,14 +238,25 @@ const Navbar = () => {
                 <label className="text-sm sm:text-base font-medium sm:w-48 flex-shrink-0">
                   Confirm New Password
                 </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Confirm New Password"
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
-                />
+
+                <div className="relative flex-1">
+                  <input
+                    type={showPassword.confirm ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    placeholder="Confirm New Password"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200 text-sm sm:text-base"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => togglePassword("confirm")}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword.confirm ? <IoIosEyeOff size={20} /> : <IoIosEye size={20} />}
+                  </button>
+                </div>
               </div>
             </div>
 

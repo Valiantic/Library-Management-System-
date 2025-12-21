@@ -244,7 +244,6 @@ export const userLoginService = async (userName, password) => {
     }
 }
 
-
 // USER FORGOT PASSWORD REQUEST
 export const userForgotPasswordRequestService = async (emailAddress) => {
     try {
@@ -447,3 +446,57 @@ export const addUserService = async ({ firstName, lastName, emailAddress, userNa
         throw new Error(error.message);
     }
 };
+
+export const updateStudentPasswordService = async (userId, currentPassword, newPassword) => {
+    try {
+
+        if (!currentPassword || !newPassword) {
+            return { success: false, message: "All fields are required" };
+        }
+
+        const user = await Users.findOne({
+            where: {
+                userId,
+                role: "student",
+                status: "active",
+            },
+        });
+
+        if (!user) {
+            return { success: false, message: "Student account not found" };
+        }
+
+        // 4. Verify current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return { success: false, message: "Current password is incorrect" };
+        }
+
+        // 5. Prevent reuse of old password
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            return {
+                success: false,
+                message: "New password must be different from current password",
+            };
+        }
+
+        // 6. Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // 7. Update password & invalidate sessions
+        await user.update({
+            password: hashedPassword,
+            updatedAt: new Date(),
+        });
+
+        return {
+            success: true,
+            message: "Password updated successfully",
+        };
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
