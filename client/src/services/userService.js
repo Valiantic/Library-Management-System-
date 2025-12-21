@@ -53,3 +53,20 @@ export const toggleUserStatus = async (userId, token) => {
     throw error.response?.data || { success: false, message: 'Failed to update user status' };
   }
 };
+
+export const updateStudentPassword = async (form, token) => {
+    try {
+      const response = await axios.patch(`${API_URL}/api/user/update/students/password`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to update password"
+      };
+    }
+};
