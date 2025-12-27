@@ -45,23 +45,23 @@ const LibraryBooks = () => {
   }, [token]);
 
   /* ================= FETCH BORROWED BOOKS ================= */
-    useEffect(() => {
-        const fetchBorrowedBooks = async () => {
-            try {
-            const res = await getAllBorrowedBooks(token);
+  useEffect(() => {
+    const fetchBorrowedBooks = async () => {
+        try {
+        const res = await getAllBorrowedBooks(token);
 
-            if (res?.borrowedBooks) {
-                setBorrowedBooks(res.borrowedBooks);
-            }
-            } catch (error) {
-            console.error("Failed to fetch borrowed books:", error);
-            }
-        };
+        if (res?.borrowedBooks) {
+            setBorrowedBooks(res.borrowedBooks);
+        }
+        } catch (error) {
+        console.error("Failed to fetch borrowed books:", error);
+        }
+    };
 
-        if (token) {
-            fetchBorrowedBooks();
+    if (token) {
+        fetchBorrowedBooks();
     }
-    }, [token]);
+  }, [token]);
 
   /* ================= FILTER ================= */
   const filteredBooks = books.filter(
