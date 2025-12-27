@@ -8,9 +8,10 @@ import { AuthContext } from '../../context/AuthContext.jsx';
 import Loading from '../Loading.jsx'
 import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const Navbar = () => {
-  const { toastSuccess, toastError, token } = useContext(AuthContext);
+  const { toastSuccess, toastError, token, openSideBar, setOpenSideBar } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -126,16 +127,34 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className="bg-white shadow-sm px-4 py-3 sm:px-6 lg:px-8 pl-6">
         <div className="flex items-center justify-between">
-          {/* Left Section - User Info */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Sidebar Toggle */}
+            {!openSideBar && (
+              <button
+                onClick={() => setOpenSideBar(true)}
+                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center
+                  hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Open sidebar"
+              >
+                <span><GiHamburgerMenu className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" /></span>
+              </button>
+            )}
+
+            {/* User Icon */}
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-900 rounded-full flex items-center justify-center flex-shrink-0">
               <FaUser className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
+
             <div className="min-w-0">
-              <h2 className="text-sm sm:text-base font-semibold truncate">Sample Name</h2>
-              <p className="text-xs sm:text-sm text-gray-600 truncate">Student</p>
+              <h2 className="text-sm sm:text-base font-semibold truncate">
+                Sample Name
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
+                Student
+              </p>
             </div>
           </div>
+
 
           {/* Right Section - Time/Date and Settings */}
           <div className="flex items-center gap-3 sm:gap-4">

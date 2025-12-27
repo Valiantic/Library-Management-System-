@@ -11,6 +11,8 @@ export function AuthProvider({children}) {
   const [token, setToken] = useState(() => localStorage.getItem('authToken') || '');
   const [passwordResetSessionToken, setPasswordResetSessionToken] = useState(() => localStorage.getItem('passwordResetSessionToken') || '');
 
+  const [openSideBar, setOpenSideBar] = useState(true);
+
   // User state for session management
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
@@ -268,7 +270,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginData, setLoginData, handleLogin, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginData, setLoginData, handleLogin, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout, openSideBar, setOpenSideBar
   }
 
   return (
