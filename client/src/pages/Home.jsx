@@ -1,20 +1,52 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { BookOpen, RotateCcw, Hand } from 'lucide-react';
 import Navbar from '../components/Student/Navbar';
 import Sidebar from '../components/Student/Sidebar';
+import {getAllBorrowedBooks} from "../services/bookService.js"; 
 
 const Home = () => {
-  const { navigate } = useContext(AuthContext);
+  const { navigate, token } = useContext(AuthContext);
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
 
-  // Empty data for now - will be populated from backend later
-  const totalBorrowed = 0;
-  const totalReturned = 0;
+  /* ================= FETCH BORROWED BOOKS ================= */
+  useEffect(() => {
+    const fetchBorrowedBooks = async () => {
+        try {
+        const res = await getAllBorrowedBooks(token);
+
+        if (res?.borrowedBooks) {
+            setBorrowedBooks(res.borrowedBooks);
+        }
+        } catch (error) {
+        console.error("Failed to fetch borrowed books:", error);
+        }
+    };
+
+    if (token) {
+        fetchBorrowedBooks();
+    }
+  }, [token]);
+
+  
+
+  // ================= CALCULATIONS =================
+  const totalBorrowed = borrowedBooks.filter(
+    (b) => b.status === "borrowed"
+  ).length;
+
+  const totalReturned = borrowedBooks.filter(
+    (b) => b.status === "returned"
+  ).length;
+
   const total = totalBorrowed + totalReturned;
 
-  // Calculate pie chart segments
-  const borrowedPercentage = total > 0 ? (totalBorrowed / total) * 100 : 50;
-  const returnedPercentage = total > 0 ? (totalReturned / total) * 100 : 50;
+  // Avoid divide-by-zero
+  const borrowedPercentage = total > 0 ? (totalBorrowed / total) * 100 : 0;
+  const returnedPercentage = total > 0 ? (totalReturned / total) * 100 : 0;
+
+  // Circle circumference (2πr where r = 120)
+  const CIRCUMFERENCE = 2 * Math.PI * 120;
 
   return (
     <>
@@ -81,6 +113,7 @@ const Home = () => {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-center mb-6">
                 <svg width="280" height="280" viewBox="0 0 280 280" className="max-w-full">
+                  {/* Borrowed */}
                   <circle
                     cx="140"
                     cy="140"
@@ -88,9 +121,11 @@ const Home = () => {
                     fill="none"
                     stroke="#3D3E3E"
                     strokeWidth="60"
-                    strokeDasharray={`${(borrowedPercentage / 100) * 754} 754`}
+                    strokeDasharray={`${(borrowedPercentage / 100) * CIRCUMFERENCE} ${CIRCUMFERENCE}`}
                     transform="rotate(-90 140 140)"
                   />
+
+                  {/* Returned */}
                   <circle
                     cx="140"
                     cy="140"
@@ -98,8 +133,8 @@ const Home = () => {
                     fill="none"
                     stroke="#151619"
                     strokeWidth="60"
-                    strokeDasharray={`${(returnedPercentage / 100) * 754} 754`}
-                    strokeDashoffset={`${-(borrowedPercentage / 100) * 754}`}
+                    strokeDasharray={`${(returnedPercentage / 100) * CIRCUMFERENCE} ${CIRCUMFERENCE}`}
+                    strokeDashoffset={`${-(borrowedPercentage / 100) * CIRCUMFERENCE}`}
                     transform="rotate(-90 140 140)"
                   />
                 </svg>
@@ -108,12 +143,17 @@ const Home = () => {
               {/* Legend */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3 border-l-4 border-gray-600 pl-3">
-                  <div className="w-4 h-4 bg-neutral-600 rounded-full flex-shrink-0"></div>
-                  <span className="text-sm sm:text-base font-medium">Total Borrowed Books</span>
+                  <div className="w-4 h-4 bg-neutral-600 rounded-full"></div>
+                  <span className="text-sm sm:text-base font-medium">
+                    Total Borrowed Books ({totalBorrowed})
+                  </span>
                 </div>
+
                 <div className="flex items-center gap-3 border-l-4 border-gray-900 pl-3">
-                  <div className="w-4 h-4 bg-black rounded-full flex-shrink-0"></div>
-                  <span className="text-sm sm:text-base font-medium">Total Returned Books</span>
+                  <div className="w-4 h-4 bg-black rounded-full"></div>
+                  <span className="text-sm sm:text-base font-medium">
+                    Total Returned Books ({totalReturned})
+                  </span>
                 </div>
               </div>
             </div>
