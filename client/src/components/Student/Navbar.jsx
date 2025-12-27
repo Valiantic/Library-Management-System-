@@ -10,8 +10,9 @@ import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 
+
 const Navbar = () => {
-  const { toastSuccess, toastError, token, openSideBar, setOpenSideBar } = useContext(AuthContext);
+  const { toastSuccess, toastError, token, openSideBar, setOpenSideBar, studentInfo } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -29,8 +30,6 @@ const Navbar = () => {
       [field]: !prev[field]
     }));
   };
-
-
   
   const [formData, setFormData] = useState({
     currentPassword: '',
@@ -147,10 +146,10 @@ const Navbar = () => {
 
             <div className="min-w-0">
               <h2 className="text-sm sm:text-base font-semibold truncate">
-                Sample Name
+                {studentInfo?.userName || ""}
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 truncate">
-                Student
+                {studentInfo?.role || ""}
               </p>
             </div>
           </div>

@@ -70,3 +70,4 @@ export const updateStudentPassword = async (form, token) => {
       };
     }
 };
+

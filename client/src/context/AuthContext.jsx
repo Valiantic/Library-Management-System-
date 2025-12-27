@@ -11,11 +11,12 @@ export function AuthProvider({children}) {
   const [token, setToken] = useState(() => localStorage.getItem('authToken') || '');
   const [passwordResetSessionToken, setPasswordResetSessionToken] = useState(() => localStorage.getItem('passwordResetSessionToken') || '');
 
-  const [openSideBar, setOpenSideBar] = useState(true);
+  const [openSideBar, setOpenSideBar] = useState(false);
 
   // User state for session management
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [studentInfo, setStudentInfo] = useState(null);
 
   const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
 
@@ -202,6 +203,27 @@ export function AuthProvider({children}) {
   };
 
 
+  const handleFetchStudentInfo = async() => {
+    try {
+        const response = await axios.get(`${backendUrl}/api/user/student`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.success) {
+          setStudentInfo(response.data.user);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+  }
+  useEffect(() => {
+      if (token) {
+          handleFetchStudentInfo();
+      }
+  }, [token]);
+
+
 
   // USER TOKEN
   useEffect(() => {
@@ -270,7 +292,7 @@ export function AuthProvider({children}) {
   }
 
   const value = {
-    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginData, setLoginData, handleLogin, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout, openSideBar, setOpenSideBar
+    navigate, toastSuccess, toastError, signUpStep, setSignUpStep, signUpData, setSignUpData, handleSignUpStepOne, handleSignUpStepTwo, token, setToken, loginData, setLoginData, handleLogin, forgotPasswordStep, setForgotPasswordStep, handleForgotPasswordStepOne, handleForgotPasswordStepTwo, handleForgotPasswordStepThree, passwordResetSessionToken, user, setUser, userLoading, handleLogout, openSideBar, setOpenSideBar, studentInfo, setStudentInfo
   }
 
   return (

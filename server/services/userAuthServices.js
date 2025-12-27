@@ -500,3 +500,15 @@ export const updateStudentPasswordService = async (userId, currentPassword, newP
         throw new Error(error.message);
     }
 }
+
+// GET STUDENT CREDENTIALS SERVICE
+export const getStudentInfoService = async (userId) => {
+    try {
+        const user = await Users.findByPk(userId);
+        return { success: true, user };
+
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+};

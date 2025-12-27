@@ -16,6 +16,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Inventory from './pages/Inventory.jsx'
 import Membership from './pages/Membership.jsx'
 import './index.css';
+import LibraryBooks from './pages/LibraryBooks.jsx';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
 
         {/* Protected Route */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
+        <Route path="/library-books" element={<ProtectedRoute><LibraryBooks /></ProtectedRoute>}/>
 
         {/* Admin Protected Routes */}
         <Route path="/dashboard" element={<AdminProtectedRoute><Dashboard /></AdminProtectedRoute>}/>

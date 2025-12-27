@@ -1,5 +1,8 @@
 import Books from '../model/Book.js';
 import { Op } from 'sequelize';
+import Users from '../model/User.js';
+import BorrowedBook from '../model/BorrowedBook.js';
+import { sequelize } from '../config/sequelize.js';
 
 // ADD NEW BOOK
 export const addBookService = async (bookName, author, category, quantity) => {
@@ -213,3 +216,141 @@ export const toggleBookStatusService = async (bookId) => {
         };
     }
 };
+
+// GET ALL ACTIVE BOOKS SERVICE
+export const getAllActiveBooksService = async (userId) => {
+    try {
+        const user = await Users.findByPk(userId);
+        if (!user) {
+            return { 
+                success: false, 
+                message: "Unauthorized user" 
+            };
+        }
+
+        const activeBooks = await Books.findAll({
+            where: {
+                status: 'active', // or isActive: true
+            },
+            order: [['createdAt', 'DESC']],
+        });
+
+        return { success: true, activeBooks };
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+};
+
+
+export const addBorrowBooksService = async (userId, books) => {
+    const transaction = await sequelize.transaction();
+    try {
+        // Validate input
+        if (!Array.isArray(books) || books.length === 0) {
+            throw new Error("No books provided");
+        }
+
+        const user = await Users.findByPk(userId, { transaction });
+        if (!user) {
+            throw new Error("Unauthorized user");
+        }
+
+        for (const item of books) {
+            const { bookId, amount, dueDate } = item;
+
+            if (!bookId || !amount || amount <= 0) {
+                throw new Error("Invalid book data");
+            }
+
+            const book = await Books.findByPk(bookId, { transaction });
+            if (!book) {
+                throw new Error(`Book ${bookId} not found`);
+            }
+
+            if (book.quantity < amount) {
+                throw new Error(`Not enough quantity for ${book.bookName}`);
+            }
+
+            // 🔍 Check if user already borrowed this book (ACTIVE)
+            const existingBorrow = await BorrowedBook.findOne({
+                where: {
+                userId,
+                bookId,
+                status: "borrowed",
+                },
+                transaction,
+            });
+
+            if (existingBorrow) {
+                // ✅ Update existing record
+                await existingBorrow.increment(
+                { amount },
+                { transaction }
+                );
+
+                // Optional: extend due date if later
+                if (new Date(dueDate) > new Date(existingBorrow.dueDate)) {
+                await existingBorrow.update(
+                    { dueDate },
+                    { transaction }
+                );
+                }
+            } else {
+                // ✅ Create new borrow record
+                await BorrowedBook.create(
+                {
+                    userId,
+                    bookId,
+                    amount,
+                    dueDate,
+                    status: "borrowed",
+                },
+                { transaction }
+                );
+            }
+
+            // 🔻 Reduce available books
+            await book.decrement("quantity", {
+                by: amount,
+                transaction,
+            });
+        }
+
+        await transaction.commit();
+
+        return {
+            success: true,
+            message: "Books borrowed successfully"
+        };
+
+    } catch (error) {
+        await transaction.rollback();
+        console.error(error);
+        throw new Error(error.message);
+    }
+};
+
+
+// GET ALL ACTIVE BOOKS SERVICE
+export const getAllBorrowedBooksService = async (userId) => {
+    try {
+        const user = await Users.findByPk(userId);
+        if (!user) {
+            return { 
+                success: false, 
+                message: "Unauthorized user" 
+            };
+        }
+
+        const borrowedBooks = await BorrowedBook.findAll({});
+
+        return { success: true, borrowedBooks };
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.message);
+    }
+};
+
+
+

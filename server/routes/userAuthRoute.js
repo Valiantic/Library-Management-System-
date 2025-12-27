@@ -1,5 +1,5 @@
 import express from 'express';
-import { userRegistrationController, userMeController, userRegisterCodeVerifyController, userLoginController, userForgotPasswordRequestController, userForgotPasswordVerificationController, userResetPasswordController, getAllUsersController, addUserController, updateUserController, toggleUserStatusController, updateStudentPasswordController } from '../controllers/userAuthController.js'
+import { userRegistrationController, userMeController, userRegisterCodeVerifyController, userLoginController, userForgotPasswordRequestController, userForgotPasswordVerificationController, userResetPasswordController, getAllUsersController, addUserController, updateUserController, toggleUserStatusController, updateStudentPasswordController, getStudentInfoController } from '../controllers/userAuthController.js'
 import userAuth from '../middleware/userAuth.js';
 
 const userRouter = express.Router();
@@ -37,6 +37,10 @@ userRouter.post('/add', userAuth, addUserController);
 
 // UPDATE STUDENT PASSWORD
 userRouter.patch('/update/students/password', userAuth, updateStudentPasswordController);
+
+
+// DISPLAY STUDENT INFO
+userRouter.get('/student', userAuth, getStudentInfoController);
 
 
 
