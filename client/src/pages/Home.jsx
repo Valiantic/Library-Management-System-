@@ -56,7 +56,7 @@ const Home = () => {
 
             {/* Browse Inventory Card */}
             <div 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/library-books')}
               className="bg-white rounded-lg shadow-sm p-6 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">

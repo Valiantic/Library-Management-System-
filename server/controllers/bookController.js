@@ -1,4 +1,4 @@
-import { addBookService, getAllBooksService, getBookByIdService, updateBookService, deleteBookService, toggleBookStatusService } from '../services/bookServices.js';
+import { addBookService, getAllBooksService, getBookByIdService, updateBookService, deleteBookService, toggleBookStatusService, getAllActiveBooksService, addBorrowBooksService, getAllBorrowedBooksService } from '../services/bookServices.js';
 
 // ADD BOOK
 export const addBookController = async (req, res) => {
@@ -90,3 +90,48 @@ export const toggleBookStatusController = async (req, res) => {
         });
     }
 };
+
+export const getAllActiveBooksController = async (req, res) => {
+    try {
+        const { ID } = req.user;
+        const result = await getAllActiveBooksService(ID);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+// ADD BORROWED BOOK
+export const addBorrowBooksController = async (req, res) => {
+    try {
+        const { ID } = req.user;
+        const books = req.body;
+        const result = await addBorrowBooksService(ID, books);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+export const getAllBorrowedBooksController = async (req, res) => {
+    try {
+        const { ID } = req.user;
+        const result = await getAllBorrowedBooksService(ID);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}

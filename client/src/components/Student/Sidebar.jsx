@@ -8,17 +8,10 @@ import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 const Sidebar = () => {
-  const { setToken, toastSuccess, openSideBar, setOpenSideBar } = useContext(AuthContext);
+  const { openSideBar, setOpenSideBar, handleLogout, navigate} = useContext(AuthContext);
 
   const [activeTab, setActiveTab] = useState("home");
 
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    setToken('');
-    navigate('/login');
-    setSignUpStep(1)
-    toast.success("Logged out successfully", {...toastSuccess});
-  }
 
   return (
     <div
@@ -44,21 +37,21 @@ const Sidebar = () => {
         <div className="flex flex-col items-center mt-6 space-y-6">
 
           <button
-            onClick={() => setActiveTab("home")}
+            onClick={() => navigate("/home")}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black"
           >
             <span><AiFillHome className="w-6 h-6" /></span>
           </button>
 
           <button
-            onClick={() => setActiveTab("returned")}
+            onClick={() => navigate("")}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black"
           >
             <span><FaCompass className="w-6 h-6" /></span>
           </button>
 
           <button
-            onClick={() => setActiveTab("borrow")}
+            onClick={() => navigate("library-books")}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black"
           >
             <span><MdOutlineMenuBook className="w-6 h-6" /></span>
@@ -69,10 +62,7 @@ const Sidebar = () => {
       {/* LOGOUT */}
       {openSideBar && (
         <div className="absolute bottom-6 w-full flex justify-center">
-          <button
-            onClick={handleLogout}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black"
-          >
+          <button onClick={() => handleLogout()} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black">
             <span><IoLogOut className="w-5 h-5" /></span>
           </button>
         </div>

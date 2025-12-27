@@ -1,4 +1,4 @@
-import { updateUserService, toggleUserStatusService } from '../services/userAuthServices.js';
+import { updateUserService, toggleUserStatusService, getStudentInfoService } from '../services/userAuthServices.js';
 // ADMIN UPDATE USER CONTROLLER
 export const updateUserController = async (req, res) => {
     try {
@@ -166,6 +166,21 @@ export const updateStudentPasswordController = async (req, res) => {
         const { ID } = req.user;
         const {currentPassword, newPassword} = req.body;
         const result = await updateStudentPasswordService(ID, currentPassword, newPassword);
+        res.json(result);
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
+export const getStudentInfoController = async (req, res) => {
+    try {
+        const { ID } = req.user;
+        const result = await getStudentInfoService(ID);
         res.json(result);
     } catch (error) {
         console.log(error);
