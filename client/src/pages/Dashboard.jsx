@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getDashboardStats } from "../services/dashboardService";
+import { getAllBorrowedBooks} from "../services/bookService.js"; 
 import { toast } from "react-toastify";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
@@ -23,7 +24,8 @@ import {
 export default function Dashboard() {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { token, toastError } = useContext(AuthContext);
+    const { token, toastError, navigate } = useContext(AuthContext);
+    const [borrowedBooks, setBorrowedBooks] = useState([]);
 
     const fetchDashboardStats = async () => {
         if (!token) return;
@@ -43,6 +45,36 @@ export default function Dashboard() {
     useEffect(() => {
         fetchDashboardStats();
     }, [token]);
+
+    /* ================= FETCH BORROWED BOOKS ================= */
+    useEffect(() => {
+        const fetchBorrowedBooks = async () => {
+            try {
+            const res = await getAllBorrowedBooks(token);
+
+            if (res?.borrowedBooks) {
+                setBorrowedBooks(res.borrowedBooks);
+            }
+            } catch (error) {
+            console.error("Failed to fetch borrowed books:", error);
+            }
+        };
+
+        if (token) {
+            fetchBorrowedBooks();
+        }
+    }, [token]);
+
+    // ================= BORROWED BOOKS STATS =================
+    const totalBorrowedRecords = borrowedBooks.length;
+
+    const totalBorrowedActive = borrowedBooks.filter(
+        (item) => item.status === "borrowed"
+    ).length;
+
+    const totalReturnedBooks = borrowedBooks.filter(
+        (item) => item.status === "returned"
+    ).length;
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -158,6 +190,32 @@ export default function Dashboard() {
                                         <span className="truncate">Inactive inventory</span>
                                     </div>
                                 </div>
+
+                                
+
+                                {/* Total Borrowed Records Card */}
+                                <div onClick={() => navigate("/list-borrowed")} className="cursor-pointer bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
+                                    <div className="flex items-center justify-between">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-xs md:text-sm font-medium text-gray-500">
+                                                Total Borrowed Records
+                                            </p>
+                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
+                                                {totalBorrowedRecords}
+                                            </p>
+                                        </div>
+                                        <div className="bg-indigo-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
+                                            <FiBookOpen className="w-5 h-5 md:w-6 md:h-6 text-indigo-600" />
+                                        </div>
+                                    </div>
+                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-gray-500">
+                                        <FiTrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
+                                        <span className="truncate">
+                                            {totalBorrowedActive} borrowed · {totalReturnedBooks} returned
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
 
                             {/* Main Content Grid */}

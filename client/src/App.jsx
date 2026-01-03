@@ -18,6 +18,7 @@ import Membership from './pages/Membership.jsx'
 import './index.css';
 import LibraryBooks from './pages/LibraryBooks.jsx';
 import BorrowedBooks from './pages/BorrowedBooks.jsx';
+import ListBorrowedBooks from './pages/ListBorrowedBooks.jsx';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/dashboard" element={<AdminProtectedRoute><Dashboard /></AdminProtectedRoute>}/>
         <Route path="/inventory" element={<AdminProtectedRoute><Inventory /></AdminProtectedRoute>}/>
         <Route path="/membership" element={<AdminProtectedRoute><Membership /></AdminProtectedRoute>}/>
+        <Route path="/list-borrowed" element={<AdminProtectedRoute><ListBorrowedBooks /></AdminProtectedRoute>}/>
 
         <Route path="*" element={token ? <Navigate to="/home" replace/> : <Navigate to="/login" replace/>}/>
 
