@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
 import { AiFillHome } from "react-icons/ai";
 import { MdOutlineMenuBook } from "react-icons/md";
@@ -44,7 +45,7 @@ const Sidebar = () => {
           </button>
 
           <button
-            onClick={() => navigate("")}
+            onClick={() => navigate("borrowed-books")}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-black"
           >
             <span><FaCompass className="w-6 h-6" /></span>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import { X, BookOpen } from 'lucide-react';
 import { addBook } from '../services/bookService';
