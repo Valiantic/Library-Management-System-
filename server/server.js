@@ -5,6 +5,7 @@ import { connectToDatabase } from './config/sequelize.js'
 import userRouter from './routes/userAuthRoute.js'
 import bookRouter from './routes/bookRoute.js'
 import dashboardRouter from './routes/dashboardRoute.js' 
+import BorrowedbookRouter from './routes/barrowedBooksRoute.js';
 
 // APP CONFIG
 const app = express();
@@ -21,6 +22,8 @@ app.use('/api/user', userRouter);
 
 // BOOK ROUTES
 app.use('/api/book', bookRouter);
+
+app.use('/api/borrowedbook', BorrowedbookRouter);
 
 // DASHBOARD ROUTES
 app.use('/api/dashboard', dashboardRouter);
