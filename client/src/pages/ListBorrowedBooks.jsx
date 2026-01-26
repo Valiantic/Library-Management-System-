@@ -14,54 +14,54 @@ const ListBorrowedBooks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-      const usersRes = await getAllUsers(token);
-      const booksRes = await getAllActiveBooks(token);
-      const borrowedRes = await getAllBorrowedBooks(token);
+        const usersRes = await getAllUsers(token);
+        const booksRes = await getAllActiveBooks(token);
+        const borrowedRes = await getAllBorrowedBooks(token);
 
-      // ✅ CORRECT EXTRACTION
-      const users = usersRes?.users || [];
-      const books = booksRes?.activeBooks || [];
-      const borrowed = borrowedRes?.borrowedBooks || [];
+        // ✅ CORRECT EXTRACTION
+        const users = usersRes?.users || [];
+        const books = booksRes?.activeBooks || [];
+        const borrowed = borrowedRes?.borrowedBooks || [];
 
-      const usersMap = {};
-      users.forEach((u) => {
-        usersMap[u.userId] = u;
-      });
+        const usersMap = {};
+        users.forEach((u) => {
+          usersMap[u.userId] = u;
+        });
 
-      const booksMap = {};
-      books.forEach((b) => {
-        booksMap[b.bookId] = b;
-      });
+        const booksMap = {};
+        books.forEach((b) => {
+          booksMap[b.bookId] = b;
+        });
 
-      const merged = borrowed.map((item) => {
-        const user = usersMap[item.userId];
-        const book = booksMap[item.bookId];
+        const merged = borrowed.map((item) => {
+          const user = usersMap[item.userId];
+          const book = booksMap[item.bookId];
 
-        return {
-          borrowedId: item.borrowedId,
-          username: user?.userName || "Unknown",
-          bookName: book?.bookName || "Unavailable",
-          category: book?.category || "Unavailable",
-          amount: item.amount,
-          status: item.status,
-          dateAndTimeAdded: item.dateAndTimeAdded,
-        };
-      });
-      setRows(merged);
+          return {
+            borrowedId: item.borrowedId,
+            username: user?.userName || "Unknown",
+            bookName: book?.bookName || "Unavailable",
+            category: book?.category || "Unavailable",
+            amount: item.amount,
+            status: item.status,
+            dateAndTimeAdded: item.dateAndTimeAdded,
+          };
+        });
+        setRows(merged);
 
-    } catch (error) {
-      setRows([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (error) {
+        setRows([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchData();
-}, [token]);
+    fetchData();
+  }, [token]);
 
 
 
@@ -74,10 +74,10 @@ const ListBorrowedBooks = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col md:ml-72 lg:ml-72">
         <TopBar />
 
         <div className="p-2 md:p-4">
@@ -158,11 +158,10 @@ const ListBorrowedBooks = () => {
                       </td>
                       <td className="px-4 py-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            row.status === "borrowed"
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${row.status === "borrowed"
                               ? "bg-yellow-100 text-yellow-800"
                               : "bg-green-100 text-green-800"
-                          }`}
+                            }`}
                         >
                           {row.status}
                         </span>

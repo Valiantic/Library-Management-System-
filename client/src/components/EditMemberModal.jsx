@@ -94,7 +94,7 @@ export default function EditMemberModal({ open, onClose, onEdit, member }) {
             <button
               type="button"
               onClick={handleGeneratePassword}
-              className="absolute right-12 text-white md:right-20 flex items-center justify-center p-1 text-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
+              className="absolute right-12 text-black md:right-20 flex items-center justify-center p-1 text-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
               tabIndex={-1}
               aria-label="Generate Password"
             >
@@ -103,7 +103,7 @@ export default function EditMemberModal({ open, onClose, onEdit, member }) {
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-2 text-white flex items-center justify-center p-1 text-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
+              className="absolute right-2 text-black flex items-center justify-center p-1 text-lg bg-gray-200 hover:bg-gray-300 text-gray-700"
               tabIndex={-1}
               aria-label={showPassword ? "Hide Password" : "Show Password"}
             >
@@ -119,7 +119,7 @@ export default function EditMemberModal({ open, onClose, onEdit, member }) {
             <option value="archived">Archived</option>
           </select>
           {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-black py-2 rounded hover:bg-blue-700 disabled:opacity-50">
             {loading ? "Saving..." : "Save Changes"}
           </button>
 

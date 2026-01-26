@@ -8,12 +8,17 @@ import { AuthContext } from "../context/AuthContext";
 import ReturnedModal from "../components/Student/ReturnedModal";
 import BorrowedModal from "../components/Student/BorrowedModal";
 import { formatDateTime } from "../utils/format";
+import { useSearchParams } from "react-router-dom";
 
 export default function BorrowedBooks() {
     const { token } = useContext(AuthContext);
+    const [searchParams] = useSearchParams();
+
+    // Get the tab from URL params (default to 'borrowed')
+    const initialTab = searchParams.get('tab') || 'borrowed';
 
     const [data, setData] = useState([]);
-    const [bookType, setBookType] = useState('borrowed');
+    const [bookType, setBookType] = useState(initialTab);
     const [search, setSearch] = useState('');
 
     const [borrowedId, setBorrowedId] = useState(null);

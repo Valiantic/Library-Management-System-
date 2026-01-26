@@ -76,7 +76,7 @@ export const registrationEmailTemplate = (verificationCode) => {
                     <!-- Body Section -->
                     <div class="email-body">
                         <h2>Account Verification</h2>
-                        <p>Greetings from Chiggas Library!<br>Use the code below to verify your email and complete your registration:</p>
+                        <p>Greetings from Aurevia Library Management System!<br>Use the code below to verify your email and complete your registration:</p>
                         <div class="verification-code">${verificationCode}</div>
                         <p>This code will expire in <b>60 minutes.</b></p>
                         <p>Enter this code on the registration page to verify your account.</p>

@@ -70,8 +70,8 @@ export default function ArchiveMemberModal({ isOpen, onClose, member, onToggleSt
 
           <div className="text-center">
             <p className="text-gray-700 mb-2">
-              {isArchived 
-                ? 'Are you sure you want to activate this user?' 
+              {isArchived
+                ? 'Are you sure you want to activate this user?'
                 : 'Are you sure you want to archive this user?'}
             </p>
             <p className="text-lg font-semibold text-gray-900">
@@ -83,8 +83,8 @@ export default function ArchiveMemberModal({ isOpen, onClose, member, onToggleSt
           </div>
 
           <p className={`text-sm ${isArchived ? 'text-green-600' : 'text-orange-600'} text-center`}>
-            {isArchived 
-              ? 'This user will be able to login again.' 
+            {isArchived
+              ? 'This user will be able to login again.'
               : 'Archived users cannot login to the system.'}
           </p>
 
@@ -100,7 +100,7 @@ export default function ArchiveMemberModal({ isOpen, onClose, member, onToggleSt
               type="button"
               onClick={handleToggleStatus}
               disabled={loading}
-              className={`px-4 py-3 ${isArchived ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`px-4 py-3 ${isArchived ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} text-black rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {loading ? (isArchived ? 'ACTIVATING...' : 'ARCHIVING...') : (isArchived ? 'ACTIVATE' : 'ARCHIVE')}
             </button>

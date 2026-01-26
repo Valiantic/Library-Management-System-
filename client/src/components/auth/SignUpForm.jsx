@@ -9,10 +9,10 @@ import { IoIosEye } from "react-icons/io";
 import { IoIosEyeOff } from "react-icons/io";
 
 export default function SignUpForm() {
-    const {handleSignUpStepOne, navigate, toastError} = useContext(AuthContext)
+    const { handleSignUpStepOne, navigate, toastError } = useContext(AuthContext)
     const [passwordType, setPasswordType] = useState('password');
     const [loading, setLoading] = useState(false)
-    
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -25,8 +25,8 @@ export default function SignUpForm() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
-        ...prev,
-        [name]: value,
+            ...prev,
+            [name]: value,
         }));
     };
 
@@ -66,7 +66,7 @@ export default function SignUpForm() {
         await handleSignUpStepOne(firstName, lastName, emailAddress, userName, password);
         setLoading(false);
 
-        
+
     }
 
     const handleSignIn = () => {
@@ -74,107 +74,107 @@ export default function SignUpForm() {
     }
 
     const togglePassword = () => {
-        setPasswordType((prevPasswordType) => 
-        prevPasswordType === 'password' ? 'text' : 'password'
+        setPasswordType((prevPasswordType) =>
+            prevPasswordType === 'password' ? 'text' : 'password'
         );
     };
 
-  return (
-    <div className="signup-container">
-        {loading && <Loading/>}
-        {/* Left Section - Library Background */}
-        <div className="signup-left">
-            <img src={assets.cover_photo} alt="Cover" className="cover-photo" />
-            <div className="signup-left-overlay"></div>
+    return (
+        <div className="signup-container">
+            {loading && <Loading />}
+            {/* Left Section - Library Background */}
+            <div className="signup-left">
+                <img src={assets.cover_photo} alt="Cover" className="cover-photo" />
+                <div className="signup-left-overlay"></div>
 
-            <div className="signup-left-content">
-                <h1 className="library-title">CHIGGAS</h1>
-                <p className="library-subtitle">LIBRARY</p>
-                <p className="forgot-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
-                <p className="signin-prompt">Already have Account? Sign in now.</p>
-                <button className="signin-button" onClick={handleSignIn}>
-                SIGN IN
-                </button>
-            </div>
-        </div>
-
-        {/* Right Section - Sign Up Form */}
-        <div className="signup-right">
-            <div className="signup-form-container">
-            <h2 className="signup-title">Sign Up</h2>
-            <p className="signup-subtitle">Please provide your information to sign up.</p>
-
-
-            <form onSubmit={handleSubmit} className="signup-form">
-                {/* First Name and Last Name Row */}
-                <div className="form-row">
-                <input
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    disabled={loading}
-                />
-                <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    disabled={loading}
-                />
+                <div className="signup-left-content">
+                    <h1 className="library-title">Aurevia Library Management System</h1>
+                    <p className="library-subtitle">LIBRARY</p>
+                    <p className="forgot-text">Central Hub for IT Guides, Graphical resources, And Study materials</p>
+                    <p className="signin-prompt">Already have Account? Sign in now.</p>
+                    <button className="signin-button" onClick={handleSignIn}>
+                        SIGN IN
+                    </button>
                 </div>
+            </div>
 
-                {/* Email - Full Width */}
-                <input
-                type="email"
-                name="emailAddress"
-                placeholder="Email"
-                value={formData.emailAddress}
-                onChange={handleInputChange}
-                className="form-input full-width"
-                disabled={loading}
-                />
+            {/* Right Section - Sign Up Form */}
+            <div className="signup-right">
+                <div className="signup-form-container">
+                    <h2 className="signup-title">Sign Up</h2>
+                    <p className="signup-subtitle">Please provide your information to sign up.</p>
 
-                {/* Username and Password Row */}
-                <div className="form-row">
-                    <input
-                        type="text"
-                        name="userName"
-                        placeholder="Username"
-                        value={formData.userName}
-                        onChange={handleInputChange}
-                        className="form-input"
-                        disabled={loading}
-                    />
 
-                    <div className="signup-password">
+                    <form onSubmit={handleSubmit} className="signup-form">
+                        {/* First Name and Last Name Row */}
+                        <div className="form-row">
+                            <input
+                                type="text"
+                                name="firstName"
+                                placeholder="First Name"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                disabled={loading}
+                            />
+                            <input
+                                type="text"
+                                name="lastName"
+                                placeholder="Last Name"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                disabled={loading}
+                            />
+                        </div>
+
+                        {/* Email - Full Width */}
                         <input
-                            type={passwordType}
-                            name="password"
-                            placeholder="Password"
-                            value={formData.password}
+                            type="email"
+                            name="emailAddress"
+                            placeholder="Email"
+                            value={formData.emailAddress}
                             onChange={handleInputChange}
-                            className="form-input"
+                            className="form-input full-width"
                             disabled={loading}
                         />
-                        <button type="button" onClick={togglePassword} className="toggle-password-btn-signup">
-                            {passwordType === 'password' ? <IoIosEyeOff/> : <IoIosEye/>}
-                        </button>
-                    </div>
-                
-                </div>
 
-                {/* Submit Button */}
-                <button type="submit" className="signup-button" disabled={loading}>
-                {loading ? "SIGNING UP..." : "SIGN UP"}
-                </button>
-            </form>
+                        {/* Username and Password Row */}
+                        <div className="form-row">
+                            <input
+                                type="text"
+                                name="userName"
+                                placeholder="Username"
+                                value={formData.userName}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                disabled={loading}
+                            />
+
+                            <div className="signup-password">
+                                <input
+                                    type={passwordType}
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                    className="form-input"
+                                    disabled={loading}
+                                />
+                                <button type="button" onClick={togglePassword} className="toggle-password-btn-signup">
+                                    {passwordType === 'password' ? <IoIosEyeOff /> : <IoIosEye />}
+                                </button>
+                            </div>
+
+                        </div>
+
+                        {/* Submit Button */}
+                        <button type="submit" className="signup-button" disabled={loading}>
+                            {loading ? "SIGNING UP..." : "SIGN UP"}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-  )
+    )
 }

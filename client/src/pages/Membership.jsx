@@ -43,10 +43,10 @@ export default function Membership() {
     }, [token]);
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-gray-50">
             <Sidebar />
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col md:ml-72 lg:ml-72">
                 <TopBar />
 
                 <div className="p-2 md:p-4">
@@ -160,8 +160,8 @@ export default function Membership() {
                                                     <IoPersonSharp />
                                                 </button>
                                                 <button className="text-blue-600 hover:text-blue-900" title="Edit" onClick={() => { setSelectedUser(user); setShowEditModal(true); }}><MdEdit /></button>
-                                                <button 
-                                                    className={`${user.status === 'archived' ? 'text-green-600 hover:text-green-900' : 'text-orange-600 hover:text-orange-900'}`} 
+                                                <button
+                                                    className={`${user.status === 'archived' ? 'text-green-600 hover:text-green-900' : 'text-orange-600 hover:text-orange-900'}`}
                                                     title={user.status === 'archived' ? 'Activate' : 'Archive'}
                                                     onClick={() => { setSelectedUser(user); setShowArchiveModal(true); }}
                                                 >

@@ -150,7 +150,7 @@ export default function AddBookModal({ isOpen, onClose, onBookAdded }) {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-4 py-3 bg-gray-200 text-white rounded-lg font-medium hover:bg-gray-300 transition-colors text-sm"
+              className="px-4 py-3 bg-gray-200 text-black rounded-lg font-medium hover:bg-gray-300 transition-colors text-sm"
             >
               CANCEL
             </button>
@@ -158,7 +158,7 @@ export default function AddBookModal({ isOpen, onClose, onBookAdded }) {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="px-4 py-3 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 bg-black text-black rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'ADDING...' : 'ADD'}
             </button>

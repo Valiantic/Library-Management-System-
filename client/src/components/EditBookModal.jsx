@@ -156,7 +156,7 @@ export default function EditBookModal({ isOpen, onClose, book, onBookUpdated }) 
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 bg-blue-600 text-black rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'SAVING...' : 'SAVE'}
             </button>

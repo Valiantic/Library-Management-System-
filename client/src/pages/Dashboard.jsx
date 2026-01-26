@@ -1,24 +1,24 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getDashboardStats } from "../services/dashboardService";
-import { getAllBorrowedBooks} from "../services/bookService.js"; 
+import { getAllBorrowedBooks } from "../services/bookService.js";
 import { toast } from "react-toastify";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
-import { 
-    FiUsers, 
-    FiBook, 
-    FiBookOpen, 
+import {
+    FiUsers,
+    FiBook,
+    FiBookOpen,
     FiArchive,
     FiTrendingUp,
     FiClock,
     FiPieChart
 } from "react-icons/fi";
-import { 
-    HiOutlineUserGroup 
+import {
+    HiOutlineUserGroup
 } from "react-icons/hi";
-import { 
-    BiBookBookmark 
+import {
+    BiBookBookmark
 } from "react-icons/bi";
 
 export default function Dashboard() {
@@ -50,13 +50,13 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchBorrowedBooks = async () => {
             try {
-            const res = await getAllBorrowedBooks(token);
+                const res = await getAllBorrowedBooks(token);
 
-            if (res?.borrowedBooks) {
-                setBorrowedBooks(res.borrowedBooks);
-            }
+                if (res?.borrowedBooks) {
+                    setBorrowedBooks(res.borrowedBooks);
+                }
             } catch (error) {
-            console.error("Failed to fetch borrowed books:", error);
+                console.error("Failed to fetch borrowed books:", error);
             }
         };
 
@@ -78,8 +78,8 @@ export default function Dashboard() {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            month: 'short', 
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
             day: 'numeric',
             year: 'numeric'
         });
@@ -87,310 +87,256 @@ export default function Dashboard() {
 
     const formatTime = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
             minute: '2-digit'
         });
     };
 
     return (
-        <div className="flex min-h-screen max-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-[#f8fafc]">
             <Sidebar />
 
-            <div className="flex-1 flex flex-col min-w-0 max-w-full">
+            <div className="flex-1 flex flex-col min-w-0 max-w-full md:ml-64 lg:ml-72 transition-all duration-300">
                 <TopBar />
 
-                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8">
+                <main className="flex-1 p-6 md:p-8 lg:p-10 max-w-[1600px] mx-auto w-full">
                     {/* Page Header */}
-                    <div className="mb-6 md:mb-8">
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Dashboard</h1>
-                        <p className="text-gray-500 mt-1">Welcome to your library management overview</p>
+                    <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Dashboard</h1>
+                            <p className="text-slate-500 font-medium mt-1.5 text-sm">Welcome back. Here's what's happening in your library today.</p>
+                        </div>
+                        <div className="flex items-center gap-2 text-[13px] font-bold text-slate-400 bg-slate-100 py-1.5 px-3 rounded-lg">
+                            <FiClock className="text-slate-400" />
+                            <span>Last updated: Just now</span>
+                        </div>
                     </div>
 
                     {loading ? (
-                        <div className="flex items-center justify-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <div className="flex flex-col items-center justify-center h-[50vh]">
+                            <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mb-4"></div>
+                            <p className="text-slate-400 font-bold text-sm tracking-widest uppercase">Loading Analytics</p>
                         </div>
                     ) : (
-                        <>
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             {/* Stats Cards */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
                                 {/* Total Users Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs md:text-sm font-medium text-gray-500">Total Users</p>
-                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
-                                                {stats?.totalUsers || 0}
-                                            </p>
+                                <div className="group bg-white rounded-3xl p-6 border border-slate-100 hover:border-blue-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-500">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                            <HiOutlineUserGroup className="w-6 h-6" />
                                         </div>
-                                        <div className="bg-blue-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
-                                            <HiOutlineUserGroup className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
-                                        </div>
+                                        <div className="text-[10px] font-black tracking-widest text-slate-400 uppercase bg-slate-50 px-2.5 py-1 rounded-full">Membership</div>
                                     </div>
-                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-gray-500">
-                                        <FiUsers className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                                        <span className="truncate">Active members</span>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-slate-500 uppercase tracking-wide">Total Users</p>
+                                        <div className="flex items-baseline gap-2 mt-1">
+                                            <h3 className="text-3xl font-black text-slate-900">{stats?.totalUsers || 0}</h3>
+                                            <span className="text-emerald-500 text-xs font-bold">+2.4%</span>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-400 italic">
+                                            <span>Active members</span>
+                                            <FiUsers className="w-3.5 h-3.5" />
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Total Books Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs md:text-sm font-medium text-gray-500">Total Book Titles</p>
-                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
-                                                {stats?.totalBooks || 0}
-                                            </p>
+                                <div className="group bg-white rounded-3xl p-6 border border-slate-100 hover:border-green-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-500">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                            <FiBook className="w-6 h-6" />
                                         </div>
-                                        <div className="bg-green-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
-                                            <FiBook className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
-                                        </div>
+                                        <div className="text-[10px] font-black tracking-widest text-slate-400 uppercase bg-slate-50 px-2.5 py-1 rounded-full">Inventory</div>
                                     </div>
-                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-gray-500">
-                                        <BiBookBookmark className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                                        <span className="truncate">{stats?.totalBookCopies || 0} total copies</span>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-slate-500 uppercase tracking-wide">Book Titles</p>
+                                        <div className="flex items-baseline gap-2 mt-1">
+                                            <h3 className="text-3xl font-black text-slate-900">{stats?.totalBooks || 0}</h3>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-400 italic">
+                                            <span>{stats?.totalBookCopies || 0} Total Copies</span>
+                                            <BiBookBookmark className="w-3.5 h-3.5" />
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Available Books Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs md:text-sm font-medium text-gray-500">Available Books</p>
-                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
-                                                {stats?.availableBooks || 0}
-                                            </p>
+                                <div className="group bg-white rounded-3xl p-6 border border-slate-100 hover:border-emerald-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-500">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                            <FiBookOpen className="w-6 h-6" />
                                         </div>
-                                        <div className="bg-emerald-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
-                                            <FiBookOpen className="w-5 h-5 md:w-6 md:h-6 text-emerald-600" />
-                                        </div>
+                                        <div className="text-[10px] font-black tracking-widest text-slate-400 uppercase bg-slate-50 px-2.5 py-1 rounded-full">Status</div>
                                     </div>
-                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-green-600">
-                                        <FiTrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                                        <span className="truncate">Ready for circulation</span>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-slate-500 uppercase tracking-wide">Available</p>
+                                        <div className="flex items-baseline gap-2 mt-1">
+                                            <h3 className="text-3xl font-black text-slate-900">{stats?.availableBooks || 0}</h3>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-emerald-600/70 italic">
+                                            <span>Ready for circulation</span>
+                                            <FiTrendingUp className="w-3.5 h-3.5" />
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Archived Books Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs md:text-sm font-medium text-gray-500">Archived Books</p>
-                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
-                                                {stats?.archivedBooks || 0}
-                                            </p>
+                                {/* Borrowed Records Card */}
+                                <div onClick={() => navigate("/list-borrowed")} className="group cursor-pointer bg-white rounded-3xl p-6 border border-slate-100 hover:border-indigo-500/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] transition-all duration-500">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                            <FiBookOpen className="w-6 h-6" />
                                         </div>
-                                        <div className="bg-amber-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
-                                            <FiArchive className="w-5 h-5 md:w-6 md:h-6 text-amber-600" />
-                                        </div>
+                                        <div className="text-[10px] font-black tracking-widest text-slate-400 uppercase bg-slate-50 px-2.5 py-1 rounded-full">Activity</div>
                                     </div>
-                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-gray-500">
-                                        <FiArchive className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                                        <span className="truncate">Inactive inventory</span>
+                                    <div>
+                                        <p className="text-[13px] font-bold text-slate-500 uppercase tracking-wide">Total Records</p>
+                                        <div className="flex items-baseline gap-2 mt-1">
+                                            <h3 className="text-3xl font-black text-slate-900">{totalBorrowedRecords}</h3>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-slate-400 italic">
+                                            <span>{totalBorrowedActive} active · {totalReturnedBooks} back</span>
+                                            <FiTrendingUp className="w-3.5 h-3.5" />
+                                        </div>
                                     </div>
                                 </div>
-
-                                
-
-                                {/* Total Borrowed Records Card */}
-                                <div onClick={() => navigate("/list-borrowed")} className="cursor-pointer bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5 hover:shadow-md transition-shadow">
-                                    <div className="flex items-center justify-between">
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-xs md:text-sm font-medium text-gray-500">
-                                                Total Borrowed Records
-                                            </p>
-                                            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mt-1">
-                                                {totalBorrowedRecords}
-                                            </p>
-                                        </div>
-                                        <div className="bg-indigo-100 p-2 md:p-3 rounded-xl flex-shrink-0 ml-2">
-                                            <FiBookOpen className="w-5 h-5 md:w-6 md:h-6 text-indigo-600" />
-                                        </div>
-                                    </div>
-                                    <div className="mt-2 md:mt-3 flex items-center text-xs md:text-sm text-gray-500">
-                                        <FiTrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                                        <span className="truncate">
-                                            {totalBorrowedActive} borrowed · {totalReturnedBooks} returned
-                                        </span>
-                                    </div>
-                                </div>
-
                             </div>
 
                             {/* Main Content Grid */}
-                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
-                                {/* Recent Books - Takes 2 columns */}
-                                <div className="xl:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-base md:text-lg font-semibold text-gray-800">Recently Added Books</h2>
-                                        <FiClock className="w-4 h-4 md:w-5 md:h-5 text-gray-400 flex-shrink-0" />
+                            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                                {/* Recent Books Table */}
+                                <div className="xl:col-span-2 bg-white rounded-[32px] p-8 border border-slate-100">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div>
+                                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Recently Added</h2>
+                                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Latest inventory updates</p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                            <FiClock className="w-5 h-5" />
+                                        </div>
                                     </div>
-                                    <div className="overflow-x-auto -mx-4 md:mx-0">
-                                        <div className="min-w-[400px] px-4 md:px-0">
-                                            <table className="w-full">
-                                                <thead>
-                                                    <tr className="text-left text-xs md:text-sm text-gray-500 border-b border-gray-100">
-                                                        <th className="pb-3 font-medium">Book Title</th>
-                                                        <th className="pb-3 font-medium hidden sm:table-cell">Author</th>
-                                                        <th className="pb-3 font-medium hidden lg:table-cell">Category</th>
-                                                        <th className="pb-3 font-medium text-center">Qty</th>
-                                                        <th className="pb-3 font-medium text-right">Added</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="text-xs md:text-sm">
-                                                    {stats?.recentBooks?.length > 0 ? (
-                                                        stats.recentBooks.map((book, index) => (
-                                                            <tr key={book.bookId || index} className="border-b border-gray-50 hover:bg-gray-50">
-                                                                <td className="py-3 pr-2">
-                                                                    <div className="font-medium text-gray-800 truncate max-w-[120px] md:max-w-[180px]">{book.bookName}</div>
-                                                                    <div className="text-xs text-gray-500 sm:hidden truncate">{book.author}</div>
-                                                                </td>
-                                                                <td className="py-3 text-gray-600 hidden sm:table-cell">
-                                                                    <span className="truncate block max-w-[100px] md:max-w-[150px]">{book.author}</span>
-                                                                </td>
-                                                                <td className="py-3 hidden lg:table-cell">
-                                                                    <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium whitespace-nowrap">
-                                                                        {book.category}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="py-3 text-center text-gray-600">{book.quantity}</td>
-                                                                <td className="py-3 text-right text-gray-500 text-xs whitespace-nowrap">
-                                                                    {formatDate(book.createdAt)}
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    ) : (
-                                                        <tr>
-                                                            <td colSpan="5" className="py-8 text-center text-gray-500">
-                                                                No books added yet
+
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead>
+                                                <tr className="text-left text-[11px] font-black text-slate-400 uppercase tracking-[0.15em] border-b border-slate-50">
+                                                    <th className="pb-4">Book Information</th>
+                                                    <th className="pb-4 hidden lg:table-cell">Category</th>
+                                                    <th className="pb-4 text-center">Qty</th>
+                                                    <th className="pb-4 text-right">Date Added</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-slate-50">
+                                                {stats?.recentBooks?.length > 0 ? (
+                                                    stats.recentBooks.map((book, index) => (
+                                                        <tr key={book.bookId || index} className="group hover:bg-slate-50/50 transition-colors">
+                                                            <td className="py-5 pr-4">
+                                                                <div className="font-bold text-slate-900 transition-colors group-hover:text-blue-600">{book.bookName}</div>
+                                                                <div className="text-xs font-medium text-slate-400 mt-0.5">{book.author}</div>
+                                                            </td>
+                                                            <td className="py-5 hidden lg:table-cell">
+                                                                <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                                                    {book.category}
+                                                                </span>
+                                                            </td>
+                                                            <td className="py-5 text-center font-bold text-slate-700">{book.quantity}</td>
+                                                            <td className="py-5 text-right text-xs font-bold text-slate-400">
+                                                                {formatDate(book.createdAt)}
                                                             </td>
                                                         </tr>
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="py-20 text-center">
+                                                            <p className="text-slate-300 font-bold uppercase tracking-widest text-xs">No Recent Activity</p>
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
 
-                                {/* Books by Category */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-base md:text-lg font-semibold text-gray-800">Books by Category</h2>
-                                        <FiPieChart className="w-4 h-4 md:w-5 md:h-5 text-gray-400 flex-shrink-0" />
+                                {/* Categories Summary */}
+                                <div className="bg-white rounded-[32px] p-8 border border-slate-100">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div>
+                                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Distribution</h2>
+                                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">By Category</p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                                            <FiPieChart className="w-5 h-5" />
+                                        </div>
                                     </div>
-                                    <div className="space-y-3 md:space-y-4">
+
+                                    <div className="space-y-6">
                                         {stats?.booksByCategory?.length > 0 ? (
                                             stats.booksByCategory.map((category, index) => {
-                                                const colors = [
-                                                    'bg-blue-500',
-                                                    'bg-green-500',
-                                                    'bg-purple-500',
-                                                    'bg-amber-500',
-                                                    'bg-pink-500'
-                                                ];
-                                                const bgColors = [
-                                                    'bg-blue-100',
-                                                    'bg-green-100',
-                                                    'bg-purple-100',
-                                                    'bg-amber-100',
-                                                    'bg-pink-100'
-                                                ];
-                                                const percentage = stats.totalBooks > 0 
-                                                    ? Math.round((category.count / stats.totalBooks) * 100) 
+                                                const percentages = stats.totalBooks > 0
+                                                    ? Math.round((category.count / stats.totalBooks) * 100)
                                                     : 0;
-                                                
+                                                const accentColors = ['bg-blue-500', 'bg-indigo-500', 'bg-violet-500', 'bg-slate-900', 'bg-slate-400'];
+
                                                 return (
-                                                    <div key={category.category || index}>
-                                                        <div className="flex items-center justify-between mb-1 gap-2">
-                                                            <span className="text-xs md:text-sm font-medium text-gray-700 truncate">
-                                                                {category.category}
-                                                            </span>
-                                                            <span className="text-xs md:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">
-                                                                {category.count} ({category.totalQuantity})
-                                                            </span>
+                                                    <div key={category.category || index} className="group">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="text-[13px] font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{category.category}</span>
+                                                            <span className="text-[11px] font-black text-slate-400 tracking-tighter italic">{category.count} titles</span>
                                                         </div>
-                                                        <div className={`h-2 ${bgColors[index % 5]} rounded-full overflow-hidden`}>
-                                                            <div 
-                                                                className={`h-full ${colors[index % 5]} rounded-full transition-all duration-500`}
-                                                                style={{ width: `${percentage}%` }}
-                                                            ></div>
+                                                        <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
+                                                            <div
+                                                                className={`h-full ${accentColors[index % accentColors.length]} rounded-full transition-all duration-1000 ease-out`}
+                                                                style={{ width: `${percentages}%` }}
+                                                            />
                                                         </div>
                                                     </div>
                                                 );
                                             })
                                         ) : (
-                                            <div className="py-8 text-center text-gray-500 text-sm">
-                                                No categories yet
+                                            <div className="py-20 text-center">
+                                                <p className="text-slate-300 font-bold uppercase tracking-widest text-xs">Awaiting Data</p>
                                             </div>
                                         )}
                                     </div>
                                 </div>
 
-                                {/* Recent Users */}
-                                <div className="xl:col-span-3 bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-5">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-base md:text-lg font-semibold text-gray-800">Recently Registered Users</h2>
-                                        <FiUsers className="w-4 h-4 md:w-5 md:h-5 text-gray-400 flex-shrink-0" />
-                                    </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-                                        {stats?.recentUsers?.length > 0 ? (
-                                            stats.recentUsers.map((user, index) => (
-                                                <div 
-                                                    key={user.userId || index} 
-                                                    className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                                >
-                                                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs md:text-sm flex-shrink-0">
-                                                        {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-xs md:text-sm font-medium text-gray-800 truncate">
-                                                            {user.firstName} {user.lastName}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500 truncate">
-                                                            {user.role}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="col-span-full py-8 text-center text-gray-500 text-sm">
-                                                No users registered yet
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                {/* Library Summary Banner */}
+                                <div className="xl:col-span-3 bg-[#0f1115] rounded-[32px] overflow-hidden p-8 relative">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-500/10 rounded-full -ml-24 -mb-24 blur-3xl"></div>
 
-                                {/* Quick Stats Summary */}
-                                <div className="xl:col-span-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-sm p-4 md:p-5 text-white">
-                                    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                                        <div className="min-w-0 flex-1">
-                                            <h2 className="text-base md:text-lg lg:text-xl font-semibold">Library Summary</h2>
-                                            <p className="text-blue-100 text-xs md:text-sm mt-1">
-                                                Your library manages {stats?.totalBookCopies || 0} copies across {stats?.totalBooks || 0} titles, 
-                                                serving {stats?.totalUsers || 0} members.
+                                    <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+                                        <div className="max-w-xl">
+                                            <h2 className="text-2xl font-black text-white tracking-tight">System Summary</h2>
+                                            <p className="text-white/40 font-medium mt-2 text-sm leading-relaxed">
+                                                Aurevia current infrastructure supports <span className="text-white font-bold">{stats?.totalBookCopies || 0}</span> volumes
+                                                across <span className="text-white font-bold">{stats?.totalBooks || 0}</span> distinct categories,
+                                                fully accessible to <span className="text-white font-bold">{stats?.totalUsers || 0}</span> verified members.
                                             </p>
                                         </div>
-                                        <div className="flex items-center space-x-3 md:space-x-4 lg:space-x-6 flex-shrink-0">
-                                            <div className="text-center">
-                                                <p className="text-xl md:text-2xl lg:text-3xl font-bold">{stats?.totalBooks || 0}</p>
-                                                <p className="text-xs text-blue-200">Titles</p>
+
+                                        <div className="flex items-center gap-10">
+                                            <div className="text-center group">
+                                                <p className="text-3xl font-black text-white mb-1 group-hover:scale-110 transition-transform">{stats?.totalBooks || 0}</p>
+                                                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Titles</p>
                                             </div>
-                                            <div className="h-8 md:h-10 w-px bg-blue-400"></div>
-                                            <div className="text-center">
-                                                <p className="text-xl md:text-2xl lg:text-3xl font-bold">{stats?.totalBookCopies || 0}</p>
-                                                <p className="text-xs text-blue-200">Copies</p>
+                                            <div className="h-10 w-px bg-white/10"></div>
+                                            <div className="text-center group">
+                                                <p className="text-3xl font-black text-white mb-1 group-hover:scale-110 transition-transform">{stats?.totalBookCopies || 0}</p>
+                                                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Volumes</p>
                                             </div>
-                                            <div className="h-8 md:h-10 w-px bg-blue-400"></div>
-                                            <div className="text-center">
-                                                <p className="text-xl md:text-2xl lg:text-3xl font-bold">{stats?.totalUsers || 0}</p>
-                                                <p className="text-xs text-blue-200">Members</p>
+                                            <div className="h-10 w-px bg-white/10"></div>
+                                            <div className="text-center group">
+                                                <p className="text-3xl font-black text-white mb-1 group-hover:scale-110 transition-transform">{stats?.totalUsers || 0}</p>
+                                                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Members</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
                 </main>
             </div>

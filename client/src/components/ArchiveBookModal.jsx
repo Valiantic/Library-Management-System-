@@ -47,7 +47,7 @@ export default function ArchiveBookModal({ isOpen, onClose, book, onToggleStatus
                 <Archive className="w-5 h-5 text-orange-700" />
               )}
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg text-black font-semibold text-gray-900">
               {isArchived ? 'Unarchive Book' : 'Archive Book'}
             </h2>
           </div>
@@ -68,8 +68,8 @@ export default function ArchiveBookModal({ isOpen, onClose, book, onToggleStatus
 
           <div className="text-center">
             <p className="text-gray-700 mb-2">
-              {isArchived 
-                ? 'Are you sure you want to unarchive this book?' 
+              {isArchived
+                ? 'Are you sure you want to unarchive this book?'
                 : 'Are you sure you want to archive this book?'}
             </p>
             <p className="text-lg font-semibold text-gray-900">
@@ -81,8 +81,8 @@ export default function ArchiveBookModal({ isOpen, onClose, book, onToggleStatus
           </div>
 
           <p className={`text-sm ${isArchived ? 'text-green-600' : 'text-orange-600'} text-center`}>
-            {isArchived 
-              ? 'This book will be visible in the inventory again.' 
+            {isArchived
+              ? 'This book will be visible in the inventory again.'
               : 'Archived books will not be displayed in the inventory.'}
           </p>
 
@@ -98,7 +98,7 @@ export default function ArchiveBookModal({ isOpen, onClose, book, onToggleStatus
               type="button"
               onClick={handleToggleStatus}
               disabled={loading}
-              className={`px-4 py-3 ${isArchived ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} text-white rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`px-4 py-3 ${isArchived ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'} text-black rounded-lg font-medium transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {loading ? (isArchived ? 'RESTORING...' : 'ARCHIVING...') : (isArchived ? 'UNARCHIVE' : 'ARCHIVE')}
             </button>
